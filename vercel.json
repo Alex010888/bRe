@@ -1,9 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/", "destination": "/diagnostico-standalone.html" }
+  "redirects": [
+    { "source": "/diagnostico-standalone", "destination": "/", "permanent": true },
+    { "source": "/diagnostico-standalone.html", "destination": "/", "permanent": true }
   ],
   "headers": [
     {
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "source": "/diagnostico-standalone.html",
+      "source": "/index.html",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
