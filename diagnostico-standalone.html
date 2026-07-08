@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>El Diagnóstico · Taller ILC</title>
+  <style>
+/* ============================================================
+   EL DIAGNÓSTICO: Taller ILC — Tema ILC (mobile-first)
+   navy #1B2A4A · ámbar #F5A623 · blanco
+   Se juega desde el celular en el taller: todo apila a 1 columna.
+   ============================================================ */
+:root {
+  --navy: #1B2A4A;
+  --navy-2: #223561;
+  --amber: #F5A623;
+  --amber-dark: #d98e0f;
+  --blanco: #ffffff;
+  --gris: #8ea0c0;
+  --gris-claro: #e8edf6;
+  --verde: #2f9e44;
+  --verde-claro: #ebfbee;
+  --naranja: #f59f00;
+  --rojo: #e03131;
+  --rojo-claro: #fff0f0;
+  --panel: #ffffff;
+  --sombra: 0 6px 20px rgba(9, 18, 40, 0.28);
+  --radio: 14px;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  color: #12203c;
+  background:
+    radial-gradient(1000px 500px at 80% -10%, #26406f 0%, transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0f1c36 100%);
+  min-height: 100vh; line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+#app { max-width: 720px; margin: 0 auto; padding: 14px 12px 40px; }
+
+/* ---------- Encabezado ---------- */
+.topbar { display: flex; align-items: center; gap: 12px; color: var(--blanco); padding: 4px 2px 14px; }
+.topbar .logo {
+  width: 40px; height: 40px; border-radius: 10px; flex: none;
+  background: var(--amber); color: var(--navy);
+  display: grid; place-items: center; font-weight: 800; font-size: 20px; box-shadow: var(--sombra);
+}
+.topbar h1 { font-size: 1.12rem; letter-spacing: .2px; }
+.topbar h1 .pt { color: var(--amber); }
+.topbar .sub { color: var(--gris); font-size: .76rem; }
+.topbar .spacer { flex: 1; }
+.topbar .pill { font-size: .7rem; color: var(--navy); background: var(--gris-claro); padding: 5px 11px; border-radius: 999px; font-weight: 800; }
+.pie { color: #6f80a6; font-size: .68rem; text-align: center; margin-top: 22px; }
+
+/* ---------- Tarjetas / bloques ---------- */
+.card { background: var(--panel); border-radius: var(--radio); box-shadow: var(--sombra); padding: 16px; margin-bottom: 12px; }
+.narrativa { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: #eef3ff; border-radius: var(--radio); padding: 14px 16px; margin-bottom: 14px; }
+.narrativa h2 { color: var(--amber); font-size: 1rem; margin-bottom: 6px; }
+.narrativa p { color: #cdd8ef; font-size: .88rem; }
+
+/* ---------- Botones ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+  border: none; border-radius: 12px; font-weight: 800; font-size: .95rem; padding: 13px 18px; width: 100%;
+  transition: transform .08s ease, box-shadow .15s ease, background .15s ease; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--amber); color: var(--navy); box-shadow: 0 4px 14px rgba(245,166,35,.35); }
+.btn-primary:hover { background: var(--amber-dark); }
+.btn-primary:disabled { background: var(--gris-claro); color: #9aa8c4; cursor: not-allowed; box-shadow: none; }
+.btn-ghost { background: transparent; color: var(--gris); border: 1.5px solid rgba(255,255,255,.2); }
+.btn-row { display: flex; gap: 10px; }
+.btn-row .btn { width: auto; flex: 1; }
+
+/* ---------- Pantalla 1: Inicio ---------- */
+.tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.tabs button { flex: 1; padding: 12px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.05); color: #cdd8ef; font-weight: 800; cursor: pointer; font-size: .92rem; }
+.tabs button.sel { background: var(--amber); color: var(--navy); border-color: var(--amber); }
+.tabs-esp button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 6px; font-size: .84rem; }
+.tabs-esp button small { font-size: .62rem; font-weight: 800; opacity: .7; letter-spacing: .5px; }
+
+.progreso-barra { display: flex; align-items: center; gap: 10px; color: #eef3ff; margin-bottom: 14px; font-size: .82rem; }
+.progreso-barra .rango { font-weight: 800; color: var(--amber); font-size: .95rem; }
+.progreso-barra .track { flex: 1; height: 8px; background: rgba(255,255,255,.14); border-radius: 999px; overflow: hidden; }
+.progreso-barra .track i { display: block; height: 100%; background: var(--amber); border-radius: 999px; }
+
+.nivel-titulo { color: #cdd8ef; font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .6px; margin: 14px 2px 8px; }
+.caso-lista { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 560px) { .caso-lista { grid-template-columns: 1fr 1fr; } }
+.caso-card { text-align: left; background: var(--panel); border: none; border-radius: var(--radio); box-shadow: var(--sombra);
+  padding: 14px; cursor: pointer; position: relative; transition: transform .08s ease; }
+.caso-card:active { transform: translateY(1px); }
+.caso-card.bloqueada { opacity: .55; cursor: not-allowed; }
+.caso-card .cod { font-weight: 800; font-size: .7rem; color: var(--navy); background: var(--gris-claro); border-radius: 6px; padding: 2px 8px; }
+.caso-card .equipo { color: var(--navy); font-weight: 800; font-size: 1rem; margin: 8px 0 2px; }
+.caso-card .tit { color: #6a7a99; font-size: .8rem; }
+.caso-card .estado { position: absolute; top: 12px; right: 12px; font-size: .74rem; font-weight: 800; }
+.caso-card .estado.done { color: var(--verde); }
+.caso-card .estado.lock { color: #9aa8c4; }
+.caso-card .mejor { margin-top: 8px; font-size: .74rem; color: #56668a; }
+
+/* ---------- Pantalla 2: Inspección ---------- */
+.sintoma h2 { color: var(--navy); font-size: 1.1rem; margin-bottom: 4px; }
+.sintoma .equipo-tag { color: var(--amber-dark); font-weight: 800; font-size: .78rem; text-transform: uppercase; letter-spacing: .4px; }
+.sintoma p { color: #33445f; font-size: .92rem; margin-top: 6px; }
+.sintoma .contexto { color: #6a7a99; font-size: .82rem; font-style: italic; margin-top: 6px; }
+
+.reloj { margin: 12px 0; }
+.reloj .lbl { display: flex; justify-content: space-between; font-size: .8rem; color: #56668a; margin-bottom: 5px; font-weight: 700; }
+.reloj .lbl b { color: var(--navy); }
+.reloj .track { height: 14px; border-radius: 8px; background: var(--gris-claro); overflow: hidden; }
+.reloj .track i { display: block; height: 100%; background: linear-gradient(90deg, var(--verde), var(--amber)); transition: width .3s ease; }
+.reloj .track i.poco { background: linear-gradient(90deg, var(--naranja), var(--rojo)); }
+
+.seccion-lbl { font-size: .74rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: #56668a; margin: 8px 2px; }
+.puntos { display: grid; grid-template-columns: 1fr; gap: 8px; }
+@media (min-width: 480px) { .puntos { grid-template-columns: 1fr 1fr; } }
+.punto { border: 1.5px solid var(--gris-claro); border-radius: 12px; padding: 11px 12px; cursor: pointer; background: #fbfcfe; transition: all .12s ease; }
+.punto:hover:not(.rev):not(.no) { border-color: var(--amber); }
+.punto .top { display: flex; align-items: center; gap: 8px; }
+.punto .nombre { font-weight: 700; color: var(--navy); font-size: .86rem; }
+.punto .costo { margin-left: auto; font-size: .74rem; font-weight: 800; color: var(--amber-dark); white-space: nowrap; }
+.punto.rev { background: var(--verde-claro); border-color: #b2e0bd; cursor: default; }
+.punto.rev .costo { color: #6a7a99; }
+.punto.no { opacity: .45; cursor: not-allowed; }
+.punto .pista { margin-top: 7px; font-size: .82rem; color: #2c4a30; border-top: 1px dashed #b2e0bd; padding-top: 7px; }
+
+/* Panel de hipótesis */
+.hipotesis { display: grid; gap: 6px; }
+.hip { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 10px; background: #f7f9fc; border: 1px solid var(--gris-claro); }
+.hip .ico { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .8rem; flex: none; color: #fff; background: #b7c2d8; }
+.hip.apoya .ico { background: var(--verde); }
+.hip.descarta .ico { background: var(--rojo); }
+.hip.mixto .ico { background: var(--naranja); }
+.hip .nombre { font-size: .85rem; color: var(--navy); font-weight: 600; }
+.hip .cuenta { margin-left: auto; font-size: .72rem; color: #8593b0; white-space: nowrap; }
+
+/* ---------- Pantalla 3: Diagnóstico ---------- */
+.opciones { display: grid; gap: 9px; margin: 10px 0; }
+.opcion { display: flex; align-items: center; gap: 12px; padding: 13px; border: 1.5px solid var(--gris-claro);
+  border-radius: 12px; cursor: pointer; background: #fbfcfe; transition: all .12s ease; }
+.opcion:hover { border-color: var(--amber); }
+.opcion.sel { border-color: var(--amber); background: #fff7e8; }
+.opcion .marca { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--gris); flex: none; }
+.opcion.sel .marca { border-color: var(--amber-dark); background: var(--amber); box-shadow: inset 0 0 0 3px #fff; }
+.opcion .txt { font-size: .9rem; color: var(--navy); font-weight: 600; }
+.confianza { font-size: .82rem; padding: 10px 12px; border-radius: 10px; margin: 4px 0 12px; font-weight: 700; }
+.confianza.alta { background: var(--verde-claro); color: #1f7a32; }
+.confianza.baja { background: #fff4e6; color: #b3630a; }
+
+/* ---------- Pantalla 4: Reparación (repuestos) ---------- */
+.repuestos { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }
+.chip { padding: 9px 13px; border-radius: 999px; border: 1.5px solid var(--gris-claro); background: #fbfcfe;
+  cursor: pointer; font-size: .82rem; font-weight: 700; color: #3a4a6a; user-select: none; transition: all .12s ease; }
+.chip.sel { border-color: var(--amber); background: #fff7e8; color: var(--navy); }
+.chip:before { content: "＋ "; color: var(--amber-dark); font-weight: 800; }
+.chip.sel:before { content: "✓ "; color: var(--verde); }
+.nota-repuestos { font-size: .76rem; color: #6a7a99; margin-top: 8px; }
+
+/* ---------- Pantalla 5: Resultado ---------- */
+.score-hero { text-align: center; padding: 8px 0 4px; }
+.score-hero .num { font-size: 3rem; font-weight: 800; line-height: 1; color: var(--navy); }
+.score-hero .num small { font-size: 1.1rem; color: #8593b0; }
+.score-hero .veredicto { font-weight: 800; font-size: 1rem; margin-top: 4px; }
+.score-hero .veredicto.ok { color: var(--verde); }
+.score-hero .veredicto.mal { color: var(--rojo); }
+.desglose { display: grid; gap: 8px; margin: 12px 0; }
+.desglose .fila { display: grid; grid-template-columns: 130px 1fr 52px; align-items: center; gap: 10px; font-size: .82rem; }
+.desglose .fila .k { color: #56668a; font-weight: 700; }
+.desglose .fila .bar { height: 10px; background: var(--gris-claro); border-radius: 6px; overflow: hidden; }
+.desglose .fila .bar i { display: block; height: 100%; border-radius: 6px; background: var(--verde); }
+.desglose .fila .bar i.neg { background: var(--rojo); }
+.desglose .fila .v { text-align: right; font-weight: 800; color: var(--navy); }
+.desglose .fila.pen .v { color: var(--rojo); }
+
+.regreso { background: var(--rojo-claro); border: 1px solid #ffc9c9; border-radius: 12px; padding: 13px; margin: 10px 0; }
+.regreso .t { color: var(--rojo); font-weight: 800; font-size: .8rem; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+.regreso p { color: #7a2020; font-size: .88rem; }
+
+.leccion { background: var(--navy); color: #eef3ff; border-radius: 12px; padding: 15px; margin: 12px 0; }
+.leccion .t { color: var(--amber); font-weight: 800; font-size: .78rem; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px; }
+.leccion p { font-size: .9rem; margin-bottom: 10px; }
+.leccion .dato { border-top: 1px solid rgba(255,255,255,.15); padding-top: 9px; font-size: .82rem; color: #cdd8ef; }
+.leccion .dato b { color: var(--amber); }
+
+/* ---------- Modo Ruta de Inspección (pantalla 6) ---------- */
+.ruta-lista { display: grid; gap: 8px; }
+.ruta-item { border: 1.5px solid var(--gris-claro); border-radius: 12px; overflow: hidden; background: #fbfcfe; }
+.ruta-item.marcado { border-color: var(--amber); background: #fff7e8; }
+.ruta-item .fila { display: flex; align-items: center; gap: 10px; padding: 11px 12px; cursor: pointer; }
+.ruta-item .check { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--gris); display: grid; place-items: center; font-weight: 800; color: var(--verde); flex: none; }
+.ruta-item.marcado .check { border-color: var(--amber-dark); background: #fff; }
+.ruta-item .nombre { font-size: .88rem; color: var(--navy); font-weight: 600; }
+.frec-chips { display: flex; gap: 6px; padding: 0 12px 11px 44px; }
+.frec-chip { width: 40px; text-align: center; padding: 6px 0; border-radius: 8px; border: 1.5px solid var(--gris-claro); background: #fff; font-weight: 800; font-size: .82rem; color: #6a7a99; cursor: pointer; }
+.frec-chip.sel { border-color: var(--amber); background: var(--amber); color: var(--navy); }
+
+.ruta-detalle { display: grid; gap: 6px; }
+.ruta-res { display: grid; grid-template-columns: 22px 1fr auto 38px; align-items: center; gap: 8px; font-size: .82rem; padding: 7px 4px; border-bottom: 1px solid var(--gris-claro); }
+.ruta-res:last-child { border-bottom: none; }
+.ruta-res .ico { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: #fff; background: #b7c2d8; }
+.ruta-res.ok .ico { background: var(--verde); }
+.ruta-res.mal .ico { background: var(--rojo); }
+.ruta-res.omit .ico { background: var(--naranja); }
+.ruta-res.bien-omit .ico { background: #8aa0c8; }
+.ruta-res .n { color: var(--navy); font-weight: 600; }
+.ruta-res .g { text-align: right; font-weight: 800; color: var(--navy); }
+.ruta-res .frec-ok { color: #1f7a32; font-size: .74rem; }
+.ruta-res .frec-mal { color: #b3630a; font-size: .74rem; }
+
+/* ---------- Pulido: animaciones y bitácora ---------- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: fadeIn .28s ease both; }
+
+@keyframes pistaIn { from { opacity: 0; transform: translateY(-4px); max-height: 0; } to { opacity: 1; transform: none; max-height: 200px; } }
+.punto.recien .pista { animation: pistaIn .3s ease both; }
+
+/* Pista clave recién revelada: destello dorado (una sola vez, solo en ese punto). */
+@keyframes claveGlow {
+  0% { box-shadow: 0 0 0 0 rgba(245,166,35,.0); }
+  25% { box-shadow: 0 0 0 4px rgba(245,166,35,.55); border-color: var(--amber); }
+  100% { box-shadow: 0 0 0 0 rgba(245,166,35,0); }
+}
+.punto.recien.clave-hit { animation: claveGlow .9s ease both; }
+.punto .clave-badge { display: inline-block; margin-left: 6px; font-size: .64rem; font-weight: 800; color: var(--amber-dark);
+  background: #fff3d6; border-radius: 5px; padding: 1px 5px; vertical-align: middle; }
+
+@keyframes pop { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.score-hero .num { animation: pop .5s cubic-bezier(.2,.8,.3,1.2) both; }
+
+/* Barrita de acciones (sonido) */
+.acciones-insp { display: flex; align-items: center; gap: 8px; margin: 4px 2px 10px; }
+.toggle-son { margin-left: auto; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+  color: #cdd8ef; border-radius: 999px; padding: 5px 11px; font-size: .74rem; font-weight: 700; cursor: pointer; }
+
+/* Bitácora tipo log con hora simulada */
+.bitacora { background: #0f1c36; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+.bitacora .t { color: var(--amber); font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.bitacora .linea { font-family: "Consolas", ui-monospace, monospace; font-size: .74rem; color: #b9c6e4; padding: 1px 0; }
+.bitacora .linea .h { color: var(--amber); }
+.bitacora .linea.clave .txt { color: #ffe6ad; font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in, .punto.recien .pista, .punto.recien.clave-hit, .score-hero .num { animation: none !important; }
+}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="logo">ILC</div>
+      <div class="titulo">
+        <h1>El Diagnóstico <span class="pt">·</span> Taller</h1>
+        <div class="sub">Inspección → Diagnóstico → Reparación</div>
+      </div>
+      <div class="spacer"></div>
+      <div class="pill" id="pill-rango">—</div>
+    </header>
+    <main id="pantalla"></main>
+    <footer class="pie">Ingenio La Cabaña — entrenamiento de confiabilidad · datos Z24/25–Z25/26</footer>
+  </div>
+  <script>
+(function(){
+'use strict';
+
+/* ===== js/casos.js ===== */
+
+// ============================================================
+// casos.js — BANCO DE CASOS de "EL DIAGNÓSTICO: Taller ILC"
+// ------------------------------------------------------------
+// SOLO DATOS. El motor (engine.js) los consume sin conocer su
+// contenido: agregar un caso #13 = solo editar este archivo.
+//
+// Esquema de un caso (ver brief §3.1):
+//   id, especialidad('MEC'|'ELE'), nivel(1|2|3),
+//   equipo, titulo, sintoma, contexto, tiempoMin (presupuesto),
+//   puntos:      [{ id, nombre, costo(min), pista,
+//                   apunta:[hipId], descarta:[hipId], clave? }]
+//   hipotesis:   [{ id, nombre, real?, parcial? }]  (UNA real; 'combinada' = 1 entrada)
+//   reparaciones:[{ id, nombre, correcta, repuestos:[], siIncorrecta }]
+//   repuestosDisponibles: [str]   (requeridos + distractores, para la UI)
+//   leccion:     { texto, datoILC }
+//
+// Convenciones de calibración:
+//  - 'clave: true' marca las PISTAS CLAVE (las que revelan/confirman la
+//    causa real). El motor las usa para la eficiencia y la penalización
+//    "a ciegas". Cada caso tiene >= 1 (los combinados, 2).
+//  - Costos en minutos; presupuesto estándar 30 min (nivel 3: 25 min).
+//    En varios casos la suma de todos los puntos EXCEDE el presupuesto:
+//    es a propósito — castiga al "revisatodo".
+// ============================================================
+
+// ---------------------------------------------------------------
+// RUTA MECÁNICO (TAM)
+// ---------------------------------------------------------------
+
+const M1 = {
+  id: 'M1', especialidad: 'MEC', nivel: 1,
+  equipo: 'Bomba de jugo #3',
+  titulo: 'CASO ESTRELLA — fuga por el sello (tercer cambio en 6 semanas)',
+  sintoma: 'Fuga de jugo por el sello mecánico de la bomba #3.',
+  contexto: 'Zafra, semana 9. La bomba ya lleva tres cambios de sello en seis semanas.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Historial del equipo', costo: 2,
+      pista: '3 OTs previas, todas "cambio de sello", ninguna investigó la causa.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p2', nombre: 'Caras del sello retirado', costo: 5,
+      pista: 'Desgaste desparejo, astillado de un solo lado → apunta a desalineación.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p3', nombre: 'Estado de la camisa de eje (requiere desmontaje)', costo: 8,
+      pista: 'Rayadura axial profunda en la camisa: el sello nunca va a asentar.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p4', nombre: 'Alineación motor-bomba', costo: 6,
+      pista: '0.45 mm fuera de tolerancia: desalineación paralela confirmada.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p5', nombre: 'Presión de succión', costo: 4,
+      pista: 'Presión de succión normal → descarta cavitación.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p6', nombre: 'Vibración', costo: 5,
+      pista: '4.6 mm/s — Zona C ISO 10816-3, apoya desalineación.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p7', nombre: 'Línea de flush del sello', costo: 3,
+      pista: 'Flush operativo y con caudal → descarta operación en seco.',
+      apunta: [], descarta: ['h4'] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Sello defectuoso de fábrica' },
+    { id: 'h2', nombre: 'Cavitación' },
+    { id: 'h3', nombre: 'Camisa rayada + desalineación (causa combinada)', real: true },
+    { id: 'h4', nombre: 'Operación en seco' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Cambiar camisa + alinear + sello nuevo', correcta: true,
+      repuestos: ['sello', 'camisa', 'empaques', 'calzas'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar solo el sello', correcta: false, repuestos: [],
+      siIncorrecta: 'Día +5: la bomba #3 fuga otra vez. Cuarto sello del año.' },
+    { id: 'r3', nombre: 'Cambiar el rodamiento', correcta: false, repuestos: [],
+      siIncorrecta: 'Día +7: sigue fugando. El rodamiento no tenía nada que ver.' },
+  ],
+  repuestosDisponibles: ['sello', 'camisa', 'empaques', 'calzas', 'rodamiento', 'impulsor'],
+  leccion: {
+    texto: 'El sello es el fusible, no la falla. Si el eje está rayado y el equipo desalineado, cualquier sello nuevo vuelve a morir. Buscá la causa raíz antes de cambiar la pieza.',
+    datoILC: 'En Z25/26 se cambiaron 33 sellos mecánicos, casi todos por fuga y sin análisis de causa — candidato #1 a ACR.',
+  },
+};
+
+const M2 = {
+  id: 'M2', especialidad: 'MEC', nivel: 2,
+  equipo: 'Reductor de molino 4',
+  titulo: 'Temperatura alta y ruido',
+  sintoma: 'Aceite a 95 °C (normal 70–75 °C) y un zumbido que va creciendo.',
+  contexto: 'Zafra, molienda a ritmo pleno.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Nivel de aceite', costo: 2,
+      pista: 'Nivel correcto en la mirilla → descarta nivel bajo.',
+      apunta: [], descarta: ['h4'] },
+    { id: 'p2', nombre: 'Muestra de aceite', costo: 5,
+      pista: 'Oscuro, olor a quemado, viscosidad caída: el aceite está degradado.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p3', nombre: 'Enfriador de aceite', costo: 6,
+      pista: 'Incrustado, ΔT casi nulo: no está disipando calor. Aquí nace la temperatura.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p4', nombre: 'Mirilla de dientes', costo: 7,
+      pista: 'Desgaste adhesivo incipiente — consecuencia del aceite muerto, no la causa.',
+      apunta: ['h1'], descarta: [] },
+    { id: 'p5', nombre: 'Vibración', costo: 5,
+      pista: 'Leve aumento en la frecuencia de engrane.',
+      apunta: ['h1'], descarta: [] },
+    { id: 'p6', nombre: 'Bomba de lubricación', costo: 4,
+      pista: 'Presión de lubricación correcta → descarta rodamiento por falta de aceite.',
+      apunta: [], descarta: ['h2'] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Engranes desgastados' },
+    { id: 'h2', nombre: 'Rodamiento dañado' },
+    { id: 'h3', nombre: 'Enfriador obstruido → aceite degradado (causa)', real: true },
+    { id: 'h4', nombre: 'Nivel de aceite bajo' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Limpiar enfriador + cambio de aceite ISO VG 320 + monitorear engranes 2 semanas', correcta: true,
+      repuestos: ['aceite ISO VG 320', 'empaques del enfriador'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Subir a aceite VG 460 "para que aguante"', correcta: false, repuestos: [],
+      siIncorrecta: 'Parche: más desgaste en arranque y el enfriador sigue tapado. La temperatura vuelve.' },
+    { id: 'r3', nombre: 'Cambiar el reductor completo', correcta: false, repuestos: [],
+      siIncorrecta: 'Gasto enorme por un enfriador sucio. El reductor estaba sano.' },
+  ],
+  repuestosDisponibles: ['aceite ISO VG 320', 'empaques del enfriador', 'aceite VG 460', 'juego de engranes', 'rodamientos'],
+  leccion: {
+    texto: 'La temperatura mata el aceite y el aceite muerto mata el reductor. Se puede intervenir en línea (limpiar el enfriador) sin parar molienda.',
+    datoILC: 'Los reductores acumulan desgaste en las semanas 15+ de zafra: 30% de las fallas se concentran al final de la temporada.',
+  },
+};
+
+const M3 = {
+  id: 'M3', especialidad: 'MEC', nivel: 1,
+  equipo: 'Bomba de agua de inyección',
+  titulo: 'Vibración en Zona D',
+  sintoma: 'El predictivo reporta 9.2 mm/s (Zona D ISO 10816-3). Opera, pero fuera de norma.',
+  contexto: 'Zafra. El equipo sigue funcionando pero el análisis exige acción.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Espectro de vibración', costo: 6,
+      pista: 'Dominante 2×RPM con componente axial alta → apunta a desalineación.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p2', nombre: 'Alineación láser', costo: 7,
+      pista: '0.5 mm paralelo fuera de tolerancia: desalineación confirmada.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p3', nombre: 'Pernos de anclaje y pata coja', costo: 4,
+      pista: 'Pata coja confirmada: la base flexiona y arrastra la alineación.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p4', nombre: 'Frecuencias de rodamiento en el espectro', costo: 5,
+      pista: 'Sin BPFO/BPFI → descarta rodamiento dañado.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p5', nombre: 'Impulsor / balanceo', costo: 6,
+      pista: 'Componente 1× normal → descarta desbalance.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p6', nombre: 'Acople', costo: 3,
+      pista: 'Elemento elástico agrietado — consecuencia de la desalineación.',
+      apunta: ['h4'], descarta: [] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Desbalance' },
+    { id: 'h2', nombre: 'Rodamiento dañado' },
+    { id: 'h3', nombre: 'Desalineación por pata coja (causa)', real: true },
+    { id: 'h4', nombre: 'Holgura estructural' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Corregir pata coja con calzas + alineación láser + cambiar elemento del acople', correcta: true,
+      repuestos: ['calzas inox', 'elemento de acople'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar el rodamiento', correcta: false, repuestos: [],
+      siIncorrecta: 'Semana +1: de vuelta en Zona D. El rodamiento era síntoma, no causa.' },
+    { id: 'r3', nombre: 'Balancear el impulsor', correcta: false, repuestos: [],
+      siIncorrecta: 'El 1× ya estaba normal: el balanceo no cambió nada, sigue vibrando.' },
+  ],
+  repuestosDisponibles: ['calzas inox', 'elemento de acople', 'rodamiento', 'impulsor balanceado'],
+  leccion: {
+    texto: 'Regla de oro TAM: la vibración alta tiene ≥4 causas con intervenciones distintas — NUNCA concluir con un solo síntoma.',
+    datoILC: '26 equipos cerraron la zafra Z25/26 en Zona D ISO 10816-3.',
+  },
+};
+
+const M4 = {
+  id: 'M4', especialidad: 'MEC', nivel: 2,
+  equipo: 'Centrífuga B-2',
+  titulo: 'Atoros crónicos en la descarga',
+  sintoma: '3 atoros por turno en la descarga de masa.',
+  contexto: 'Fábrica reporta que "la máquina está mala".',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Raspador / descargador', costo: 5,
+      pista: 'Filo desgastado: no barre el fondo de la canasta. La masa se acumula.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p2', nombre: 'Malla / tela', costo: 4,
+      pista: 'Íntegra, sin roturas → descarta malla dañada.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p3', nombre: 'Suspensión y amortiguadores', costo: 5,
+      pista: 'En buen estado → descarta falla de suspensión.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p4', nombre: 'Datos de proceso: temperatura y brix de masa', costo: 4,
+      pista: 'Masa fría, fuera de rango: descarga mal por condición de proceso, no solo del equipo.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p5', nombre: 'Ciclo del PLC', costo: 5,
+      pista: 'Tiempos de ciclo correctos → descarta programa.',
+      apunta: [], descarta: ['h3'] },
+    { id: 'p6', nombre: 'Historial', costo: 2,
+      pista: 'Atoros desde la semana 3, siempre en turno nocturno → masa fría de madrugada.',
+      apunta: ['h4'], descarta: [] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Malla dañada' },
+    { id: 'h2', nombre: 'Falla de suspensión' },
+    { id: 'h3', nombre: 'Programa de ciclo' },
+    { id: 'h4', nombre: 'Raspador desgastado + masa fuera de especificación (causa combinada)', real: true },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Cambiar raspador Y levantar reporte a fábrica por condición de masa', correcta: true,
+      repuestos: ['raspador', 'cuchilla de descarga'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar solo el raspador', correcta: false, repuestos: [],
+      siIncorrecta: 'Los atoros bajan pero no desaparecen: la masa fría sigue llegando de madrugada.' },
+    { id: 'r3', nombre: 'Solo culpar al proceso y reportar la masa', correcta: false, repuestos: [],
+      siIncorrecta: 'Sin cambiar el raspador desgastado, los atoros continúan aunque mejore la masa.' },
+  ],
+  repuestosDisponibles: ['raspador', 'cuchilla de descarga', 'malla nueva', 'amortiguadores'],
+  leccion: {
+    texto: 'No toda falla en el equipo es del equipo: verificar la condición de proceso es parte del diagnóstico. Aquí hacen falta DOS acciones.',
+    datoILC: '13 atoros crónicos de centrífugas en Z25/26 (+47% vs Z24/25).',
+  },
+};
+
+const M5 = {
+  id: 'M5', especialidad: 'MEC', nivel: 3,
+  equipo: 'Secadora rotativa',
+  titulo: 'Golpeteo interno y fisuras',
+  sintoma: 'Golpeteo rítmico audible; se reportó una fisura en la soldadura de la llanta de rodadura.',
+  contexto: 'Zafra avanzada, equipo con muchas horas acumuladas.',
+  tiempoMin: 25,
+  puntos: [
+    { id: 'p1', nombre: 'Torque de pernos de elevadores', costo: 6,
+      pista: '30% flojos; dos elevadores sueltos golpeando el casco en cada vuelta.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p2', nombre: 'MT en soldaduras de la llanta', costo: 8,
+      pista: 'Fisuras incipientes adicionales a la reportada: fatiga por carga cíclica.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p3', nombre: 'Rodillos de apoyo', costo: 5,
+      pista: 'Desgaste desparejo → apunta a desalineación de la llanta.',
+      apunta: ['h2'], descarta: [] },
+    { id: 'p4', nombre: 'Alineación de la llanta', costo: 6,
+      pista: 'Fuera de tolerancia: causa secundaria que alimenta la fatiga.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p5', nombre: 'Espesor del casco por UT', costo: 7,
+      pista: 'Dentro de norma → descarta corrosión del casco.',
+      apunta: [], descarta: ['h1'] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Corrosión del casco' },
+    { id: 'h2', nombre: 'Falla de rodillo' },
+    { id: 'h3', nombre: 'Pernos flojos → elevadores golpeando → fatiga (causa)', real: true },
+    { id: 'h4', nombre: 'Sobrecarga de producto' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Retorquear programa completo + sustituir elevadores dañados + reparar fisuras con procedimiento calificado y MT de verificación + corregir alineación de rodillos', correcta: true,
+      repuestos: ['pernos de elevador', 'elevadores', 'consumibles de soldadura calificada'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Solo soldar la fisura visible', correcta: false, repuestos: [],
+      siIncorrecta: 'Semana +3: dos fisuras nuevas. La fatiga sigue trabajando.' },
+    { id: 'r3', nombre: 'Bajar la carga de producto y seguir operando', correcta: false, repuestos: [],
+      siIncorrecta: 'El golpeteo de los elevadores flojos continúa y las fisuras avanzan.' },
+  ],
+  repuestosDisponibles: ['pernos de elevador', 'elevadores', 'consumibles de soldadura calificada', 'rodillos de apoyo', 'llanta nueva'],
+  leccion: {
+    texto: 'La fisura es el final de la historia, no el inicio: buscá la fuente de la carga cíclica. NUNCA devolver a servicio una soldadura estructural solo con inspección visual.',
+    datoILC: 'Secadoras con 9 roturas + 8 atoros en Z25/26.',
+  },
+};
+
+const M6 = {
+  id: 'M6', especialidad: 'MEC', nivel: 3,
+  equipo: 'Eje de maza (con golpe reportado)',
+  titulo: 'Elegí el END correcto',
+  sintoma: 'El eje de molino recibió un golpe con el montacargas. Hay que decidir si vuelve a servicio.',
+  contexto: 'Caso de decisión de método (END). No hay reparación mecánica: el veredicto ES la respuesta. Presupuesto 25 min para armar tu plan de ensayos.',
+  tiempoMin: 25,
+  puntos: [
+    { id: 'p1', nombre: 'Inspección visual', costo: 2,
+      pista: 'Nada visible en la superficie. Insuficiente para decidir integridad.',
+      apunta: ['h1'], descarta: [] },
+    { id: 'p2', nombre: 'Tintas penetrantes (PT)', costo: 6,
+      pista: 'Sin indicación superficial. PT solo ve la piel del material.',
+      apunta: ['h1'], descarta: [] },
+    { id: 'p3', nombre: 'Partículas magnéticas (MT)', costo: 6,
+      pista: 'Sin indicación. MT solo alcanza superficie y subsuperficie somera.',
+      apunta: ['h1'], descarta: [] },
+    { id: 'p4', nombre: 'Ultrasonido (UT)', costo: 10,
+      pista: 'Eco coincidente a 3" de profundidad en el collarín: discontinuidad interna.',
+      apunta: ['h2'], descarta: ['h1'], clave: true },
+    { id: 'p5', nombre: 'Termografía', costo: 4,
+      pista: 'Irrelevante para integridad estructural: no aporta al veredicto.',
+      apunta: [], descarta: [] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Eje sano, apto para servicio' },
+    { id: 'h2', nombre: 'Discontinuidad interna (no apto sin evaluación)', real: true },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'NO vuelve a servicio sin evaluación en torno y criterio de aceptación documentado', correcta: true,
+      repuestos: [], siIncorrecta: null },
+    { id: 'r2', nombre: 'Aprobar para servicio con visual + PT limpios', correcta: false, repuestos: [],
+      siIncorrecta: 'Día 60 de zafra: el eje falló en plena molienda. La fisura estaba a 3 pulgadas del ojo humano.' },
+  ],
+  repuestosDisponibles: [],
+  leccion: {
+    texto: 'MT/PT solo ven la piel; el UT alcanza el núcleo. Ante un golpe con posible daño interno, el método barato que "no encuentra nada" no absuelve al eje.',
+    datoILC: 'En la campaña END 2026, los ejes #22 y #26 mostraron señales coincidentes a 3" y 4"; el #26 fue condenado.',
+  },
+};
+
+// ---------------------------------------------------------------
+// RUTA ELECTRICISTA (TAE)
+// ---------------------------------------------------------------
+
+const E1 = {
+  id: 'E1', especialidad: 'ELE', nivel: 1,
+  equipo: 'Motor 75 kW de bomba de jugo',
+  titulo: 'Dispara el térmico',
+  sintoma: '2 disparos térmicos en el turno.',
+  contexto: 'Zafra, ambiente cargado de bagacillo.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Corrientes por fase', costo: 4,
+      pista: 'Desbalance de corriente 8% → apunta a problema en la alimentación.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p2', nombre: 'Tensión en bornes', costo: 4,
+      pista: 'Desbalance de tensión 3.5% → apunta aguas arriba, no al motor.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p3', nombre: 'Megado del motor', costo: 5,
+      pista: '550 MΩ: aislamiento sano → descarta bobinado en corto.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p4', nombre: 'Carcasa y ventilación', costo: 3,
+      pista: 'Aletas y guarda tapadas de bagacillo, carcasa a 88 °C: no disipa calor.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p5', nombre: 'Giro libre de la carga', costo: 4,
+      pista: 'La bomba gira libre → descarta sobrecarga mecánica.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p6', nombre: 'Conexiones en el CCM', costo: 6,
+      pista: 'Una fase con conexión floja: origen del desbalance de corriente.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p7', nombre: 'Termografía en el CCM', costo: 5,
+      pista: 'Punto caliente en esa fase → confirma la conexión floja.',
+      apunta: ['h3'], descarta: [] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Bobinado en corto' },
+    { id: 'h2', nombre: 'Sobrecarga mecánica' },
+    { id: 'h3', nombre: 'Ventilación obstruida + conexión floja en CCM (causa combinada)', real: true },
+    { id: 'h4', nombre: 'Térmico mal calibrado' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Limpieza del motor + reapriete con torque en CCM + reinspección térmica bajo carga', correcta: true,
+      repuestos: [], siIncorrecta: null },
+    { id: 'r2', nombre: 'Mandar el motor a rebobinar', correcta: false, repuestos: [],
+      siIncorrecta: 'US$ y días perdidos: el motor estaba sano y vuelve a dispararse — la ventilación sigue tapada.' },
+    { id: 'r3', nombre: 'Subir el ajuste del térmico', correcta: false, repuestos: [],
+      siIncorrecta: 'Enmascaraste la protección: el motor se recalienta sin disparar y se daña de verdad.' },
+  ],
+  repuestosDisponibles: ['terminal/conector (si dañado)', 'juego de bobinas', 'relé térmico nuevo'],
+  leccion: {
+    texto: 'Antes de abrir el motor, revisá lo barato: limpieza y conexiones. El bagacillo es el enemigo silencioso de la ventilación.',
+    datoILC: '27 fallas de motores en Z25/26; 6 con rodamientos dañados.',
+  },
+};
+
+const E2 = {
+  id: 'E2', especialidad: 'ELE', nivel: 2,
+  equipo: 'Variador de frecuencia (VFD)',
+  titulo: 'Trips por sobretensión intermitentes',
+  sintoma: 'VFD Allen-Bradley dispara por sobretensión de bus DC 2–3 veces por semana, sin patrón aparente.',
+  contexto: 'Operaciones pide "cambiar el drive ya".',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Historial de trips con estampa de tiempo', costo: 4,
+      pista: 'Los trips coinciden con arranques de motores grandes en el mismo bus.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p2', nombre: 'Parámetros de protección del drive', costo: 4,
+      pista: 'Configuración correcta → descarta parámetros mal ajustados.',
+      apunta: [], descarta: ['h3'] },
+    { id: 'p3', nombre: 'Calidad de alimentación / armónicos', costo: 7,
+      pista: 'THD de tensión alto; bus compartido con arrancadores directos: transitorios que suben el bus DC.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p4', nombre: 'Reactor / filtro de línea', costo: 3,
+      pista: 'El drive NO tiene reactor de línea instalado: sin amortiguamiento de transitorios.',
+      apunta: ['h4'], descarta: [] },
+    { id: 'p5', nombre: 'Ventilación y temperatura del drive', costo: 3,
+      pista: 'Temperatura y ventilación OK → descarta drive dañado por calor.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p6', nombre: 'Megado del motor y cable', costo: 5,
+      pista: 'Aislamiento OK → descarta falla a tierra del motor.',
+      apunta: [], descarta: ['h2'] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Drive dañado' },
+    { id: 'h2', nombre: 'Motor con falla a tierra' },
+    { id: 'h3', nombre: 'Parámetros mal configurados' },
+    { id: 'h4', nombre: 'Transitorios y armónicos del bus compartido, sin filtro de línea (causa)', real: true },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Instalar reactor de línea (3–5%) y evaluar separación de la alimentación', correcta: true,
+      repuestos: ['reactor de línea 3-5%'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar el drive', correcta: false, repuestos: [],
+      siIncorrecta: 'Semana +2: el drive nuevo disparó igual. US$8,000 después, el problema sigue en el bus.' },
+    { id: 'r3', nombre: 'Subir el límite de sobretensión del bus', correcta: false, repuestos: [],
+      siIncorrecta: 'Deshabilitaste la protección: el bus DC trabaja al borde y ahora sí dañás los condensadores.' },
+  ],
+  repuestosDisponibles: ['reactor de línea 3-5%', 'drive nuevo', 'tarjeta de control'],
+  leccion: {
+    texto: '~60% de los reemplazos prematuros de drives son evitables: el drive suele ser la víctima de la red, no el culpable.',
+    datoILC: 'Sistemas Allen-Bradley y buses compartidos son comunes en fábrica; el reactor de línea es la mitigación estándar.',
+  },
+};
+
+const E3 = {
+  id: 'E3', especialidad: 'ELE', nivel: 2,
+  equipo: 'Motor con VFD',
+  titulo: 'Rodamientos fallan cada 2 meses',
+  sintoma: 'Tercer cambio de rodamientos del año en el mismo motor.',
+  contexto: 'Motor alimentado por variador de frecuencia.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Pista del rodamiento retirado (con lupa)', costo: 5,
+      pista: 'Estriado tipo "tabla de lavar" (fluting): firma de corrientes de eje.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p2', nombre: 'Práctica de lubricación', costo: 3,
+      pista: 'Cantidad y tipo de grasa correctos → descarta grasa incorrecta.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p3', nombre: 'Alineación', costo: 6,
+      pista: 'Dentro de tolerancia → descarta desalineación.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p4', nombre: 'Puesta a tierra del motor y cable', costo: 5,
+      pista: 'Cable sin apantallar y sin anillo de tierra de eje: la corriente de eje descarga por el rodamiento.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p5', nombre: 'Vibración', costo: 5,
+      pista: 'Aumenta con el tiempo con patrón de rodamiento — consecuencia, no causa.',
+      apunta: [], descarta: [] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Grasa incorrecta' },
+    { id: 'h2', nombre: 'Desalineación' },
+    { id: 'h3', nombre: 'Montaje defectuoso' },
+    { id: 'h4', nombre: 'Corrientes de eje inducidas por el VFD (causa)', real: true },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Anillo de puesta a tierra de eje + cable apantallado con terminación 360°', correcta: true,
+      repuestos: ['anillo de tierra de eje', 'cable apantallado'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar el rodamiento y engrasar más seguido', correcta: false, repuestos: [],
+      siIncorrecta: 'Falla de nuevo en 8 semanas; el exceso de grasa incluso empeora el problema.' },
+    { id: 'r3', nombre: 'Cambiar la marca de rodamiento', correcta: false, repuestos: [],
+      siIncorrecta: 'Cualquier rodamiento sin aislar vuelve a estriarse: la corriente sigue pasando.' },
+  ],
+  repuestosDisponibles: ['anillo de tierra de eje', 'cable apantallado', 'rodamiento aislado (alternativa)', 'grasa premium'],
+  leccion: {
+    texto: 'El rodamiento cuenta su historia en la pista: leé el patrón de falla ANTES de botarlo. El fluting delata corrientes de eje del variador.',
+    datoILC: '6 rodamientos de motor dañados en Z25/26.',
+  },
+};
+
+const E4 = {
+  id: 'E4', especialidad: 'ELE', nivel: 1,
+  equipo: 'CCM de Fábrica',
+  titulo: 'Punto caliente de 92 °C en termografía',
+  sintoma: 'La ruta termográfica detecta 92 °C en la llegada de un breaker (fases vecinas a 45 °C).',
+  contexto: 'Campaña termográfica de rutina en el CCM.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Termografía comparativa entre fases', costo: 3,
+      pista: 'ΔT de 47 °C, severidad crítica: dimensiona el problema.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p2', nombre: 'Torque de conexiones (requiere ventana segura)', costo: 5,
+      pista: 'Terminal flojo en la llegada: aquí está el punto caliente.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p3', nombre: 'Contactos del contactor', costo: 6,
+      pista: 'Picado leve, aceptable → descarta contactor agotado como causa principal.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p4', nombre: 'Desbalance de carga', costo: 4,
+      pista: '4%, dentro de lo normal → descarta sobrecarga del circuito.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p5', nombre: 'Caída de tensión en la conexión', costo: 4,
+      pista: 'mV elevados: confirma resistencia de contacto en el terminal.',
+      apunta: ['h3'], descarta: [], clave: true },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Contactor agotado' },
+    { id: 'h2', nombre: 'Sobrecarga del circuito' },
+    { id: 'h3', nombre: 'Conexión floja (causa)', real: true },
+    { id: 'h4', nombre: 'Breaker defectuoso' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Reapriete a torque especificado + verificación termográfica bajo carga a las 24 h', correcta: true,
+      repuestos: [], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar el contactor completo', correcta: false, repuestos: [],
+      siIncorrecta: 'El punto caliente sigue: estaba en la conexión, no en el aparato.' },
+    { id: 'r3', nombre: 'Cambiar el breaker', correcta: false, repuestos: [],
+      siIncorrecta: 'El breaker estaba sano; el terminal flojo sigue recalentando.' },
+  ],
+  repuestosDisponibles: ['terminal/zapata (si dañada)', 'contactor nuevo', 'breaker nuevo'],
+  leccion: {
+    texto: 'En tableros, el ~80% de los puntos calientes son conexiones, no componentes. Trabajo en tablero = ventana segura y LOTO, siempre.',
+    datoILC: '5 alertas de temperatura >80 °C en la última campaña termográfica.',
+  },
+};
+
+const E5 = {
+  id: 'E5', especialidad: 'ELE', nivel: 1,
+  equipo: 'Motor recién rebobinado',
+  titulo: 'Se calienta en vacío',
+  sintoma: 'El motor regresó del taller externo; en prueba de vacío la corriente es 30% mayor a placa y calienta.',
+  contexto: 'Aún no se ha acoplado a la carga.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Conexión de placa vs bornera', costo: 4,
+      pista: 'Conectado en delta para una tensión que exige estrella: sobreexcitado.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p2', nombre: 'Corriente de vacío por fase', costo: 3,
+      pista: 'Alta pero balanceada → apunta a conexión/magnetización, no a falla de bobina.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p3', nombre: 'Sentido de giro y ventilador', costo: 3,
+      pista: 'Giro correcto y ventilador bien → descarta ventilador invertido.',
+      apunta: [], descarta: ['h4'] },
+    { id: 'p4', nombre: 'Rodamientos', costo: 4,
+      pista: 'En buen estado y bien montados → descarta rodamiento.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p5', nombre: 'Megado', costo: 4,
+      pista: 'Aislamiento OK → descarta rebobinado defectuoso.',
+      apunta: [], descarta: ['h1'] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Rebobinado defectuoso' },
+    { id: 'h2', nombre: 'Rodamiento montado mal' },
+    { id: 'h3', nombre: 'Conexión delta/estrella incorrecta (causa)', real: true },
+    { id: 'h4', nombre: 'Ventilador invertido' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Reconectar en bornera según placa y repetir prueba de vacío antes de acoplar', correcta: true,
+      repuestos: [], siIncorrecta: null },
+    { id: 'r2', nombre: 'Devolverlo al taller externo "por garantía"', correcta: false, repuestos: [],
+      siIncorrecta: 'Una semana perdida por un puente de bornera mal puesto.' },
+    { id: 'r3', nombre: 'Acoplarlo igual y ver si se estabiliza', correcta: false, repuestos: [],
+      siIncorrecta: 'Con la carga se sobrecalienta más rápido: riesgo de quemar el motor.' },
+  ],
+  repuestosDisponibles: [],
+  leccion: {
+    texto: 'TODO motor que regresa de taller se prueba en vacío contra placa antes de acoplar. Es el control de calidad más barato que existe.',
+    datoILC: 'La conexión delta/estrella según tensión de placa es un chequeo de rutina que evita rebobinados y garantías innecesarias.',
+  },
+};
+
+const E6 = {
+  id: 'E6', especialidad: 'ELE', nivel: 3,
+  equipo: 'Bomba de pozo',
+  titulo: 'Falla a tierra intermitente',
+  sintoma: 'La protección de falla a tierra dispara de forma intermitente, más frecuente en días de lluvia.',
+  contexto: 'Equipo a la intemperie con recorrido de cable en bandeja.',
+  tiempoMin: 25,
+  puntos: [
+    { id: 'p1', nombre: 'Historial de disparos', costo: 3,
+      pista: 'Correlación con lluvia/humedad → fuga que aparece con el agua.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p2', nombre: 'Megado del conjunto completo', costo: 4,
+      pista: '2 MΩ (bajo): confirma que hay fuga, pero no la ubica.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p3', nombre: 'Megado por tramos (separando en la caja de conexiones)', costo: 7,
+      pista: 'Cable de acometida baja a 0.5 MΩ; el motor queda en 200 MΩ: la fuga está en el cable.',
+      apunta: ['h3'], descarta: ['h1'], clave: true },
+    { id: 'p4', nombre: 'Inspección física del recorrido del cable', costo: 6,
+      pista: 'Aislamiento dañado por fricción en un cruce de bandeja: entra agua y dispara.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p5', nombre: 'Prensaestopas y caja', costo: 4,
+      pista: 'Sellos correctos → descarta entrada de humedad por la caja.',
+      apunta: [], descarta: ['h2'] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Motor con humedad en el bobinado' },
+    { id: 'h2', nombre: 'Conexión en la caja' },
+    { id: 'h3', nombre: 'Cable dañado por fricción en bandeja (causa)', real: true },
+    { id: 'h4', nombre: 'Protección desajustada' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Sustituir/empalmar el tramo con encapsulado apto + proteger el cruce + megado de verificación', correcta: true,
+      repuestos: ['kit de empalme/encapsulado', 'protección del cruce de bandeja'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Mandar el motor a secado/rebobinado', correcta: false, repuestos: [],
+      siIncorrecta: 'El motor estaba en 200 MΩ: una semana perdida y el cable sigue rozando.' },
+    { id: 'r3', nombre: 'Desajustar la protección de falla a tierra', correcta: false, repuestos: [],
+      siIncorrecta: 'Ocultaste la fuga: ahora hay riesgo eléctrico real para el personal.' },
+  ],
+  repuestosDisponibles: ['kit de empalme/encapsulado', 'protección del cruce de bandeja', 'motor rebobinado'],
+  leccion: {
+    texto: 'El megado por tramos convierte "algo dispara" en "esto exactamente falla". Divide y vencerás: nunca condenes el componente caro sin seccionar el circuito.',
+    datoILC: 'Las fallas de aislamiento por humedad y fricción se concentran en equipos a la intemperie durante la época lluviosa.',
+  },
+};
+
+// ---------------------------------------------------------------
+// RUTA INSTRUMENTISTA (MTI — Taller de Instrumentación)
+// ---------------------------------------------------------------
+
+const I1 = {
+  id: 'I1', especialidad: 'INS', nivel: 1,
+  equipo: 'Transmisor de presión de vapor',
+  titulo: 'Lectura errática en el DCS',
+  sintoma: 'La presión salta erráticamente en Experion, con picos que no corresponden al proceso.',
+  contexto: 'Zafra. Operación pide "cambien el transmisor, está fallando".',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Tendencia histórica en el DCS', costo: 2,
+      pista: 'Picos aleatorios sin relación con la carga de la caldera → medición, no proceso.',
+      apunta: ['h2'], descarta: [] },
+    { id: 'p2', nombre: 'Comparar con manómetro patrón local', costo: 4,
+      pista: 'El patrón lee estable y coherente → la presión real está bien; falla la medición.',
+      apunta: [], descarta: ['h4'] },
+    { id: 'p3', nombre: 'Purgar / drenar la toma de impulso', costo: 5,
+      pista: 'Sale agua condensada; al purgar, la lectura se estabiliza. Ahí está el problema.',
+      apunta: ['h2'], descarta: [], clave: true },
+    { id: 'p4', nombre: 'Línea de sensado y manifold', costo: 6,
+      pista: 'Condensado acumulado y sin pendiente/sifón adecuado: columna variable engañando al sensor.',
+      apunta: ['h2'], descarta: [], clave: true },
+    { id: 'p5', nombre: 'Señal 4-20 mA en el lazo (multímetro)', costo: 5,
+      pista: 'Cuando la toma está purgada, la corriente es estable y coherente → descarta electrónica.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p6', nombre: 'Blindaje y tierra del cable', costo: 4,
+      pista: 'Apantallado y con tierra correcta → descarta ruido eléctrico.',
+      apunta: [], descarta: ['h3'] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Transmisor dañado (electrónica)' },
+    { id: 'h2', nombre: 'Condensado en la toma de impulso (causa)', real: true },
+    { id: 'h3', nombre: 'Ruido eléctrico por blindaje sin tierra' },
+    { id: 'h4', nombre: 'Sobrepresión real del proceso' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Purgar la toma + corregir pendiente y sifón de la línea + verificar lectura', correcta: true,
+      repuestos: [], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar el transmisor', correcta: false, repuestos: [],
+      siIncorrecta: 'El transmisor nuevo lee igual de errático: el condensado sigue en la toma.' },
+    { id: 'r3', nombre: 'Subir el damping para "suavizar" la señal', correcta: false, repuestos: [],
+      siIncorrecta: 'Enmascaraste el síntoma: la medición sigue equivocada y el control reacciona tarde.' },
+  ],
+  repuestosDisponibles: [],
+  leccion: {
+    texto: 'El transmisor casi siempre es el mensajero. En medición errática de presión/nivel con vapor, la toma de impulso (condensado, aire atrapado) es la sospechosa #1: purgá antes de condenar la electrónica.',
+    datoILC: 'La instrumentación de fábrica corre sobre Honeywell Experion con lazos 4-20 mA; la purga de tomas es rutina preventiva básica.',
+  },
+};
+
+const I2 = {
+  id: 'I2', especialidad: 'INS', nivel: 2,
+  equipo: 'Válvula de control de jugo',
+  titulo: 'No responde al setpoint',
+  sintoma: 'El DCS ordena apertura pero la válvula no se mueve o se queda pegada.',
+  contexto: 'Posicionador digital con señal 4-20 mA / HART. Zafra.',
+  tiempoMin: 30,
+  puntos: [
+    { id: 'p1', nombre: 'Señal de comando (mA) al posicionador', costo: 4,
+      pista: 'La corriente de comando llega correcta → descarta señal / DCS.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p2', nombre: 'Presión de aire de suministro al posicionador', costo: 4,
+      pista: 'Solo 2 bar; el actuador exige 5-6 bar: no tiene fuerza para mover el vástago.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p3', nombre: 'Filtro-regulador (FRL) del aire de instrumentos', costo: 5,
+      pista: 'Tazón con agua y elemento saturado: estrangula el aire. Ahí nace la falta de presión.',
+      apunta: ['h4'], descarta: [], clave: true },
+    { id: 'p4', nombre: 'Recorrido manual del vástago', costo: 6,
+      pista: 'Con fuerza, el vástago se mueve libre → descarta pegado mecánico.',
+      apunta: [], descarta: ['h3'] },
+    { id: 'p5', nombre: 'Config / calibración del posicionador', costo: 5,
+      pista: 'Parámetros correctos y autotune OK → descarta posicionador.',
+      apunta: [], descarta: ['h1'] },
+    { id: 'p6', nombre: 'Fugas en líneas de aire', costo: 4,
+      pista: 'Fuga audible en un fitting: más aire perdido. Apoya el problema de suministro.',
+      apunta: ['h4'], descarta: [] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Posicionador dañado / desconfigurado' },
+    { id: 'h2', nombre: 'Válvula equivocada seleccionada' },
+    { id: 'h3', nombre: 'Vástago pegado mecánicamente' },
+    { id: 'h4', nombre: 'Aire de instrumentos deficiente (FRL tapado + fuga) (causa)', real: true },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Drenar y cambiar elemento del FRL + corregir la fuga + verificar presión y carrera', correcta: true,
+      repuestos: ['elemento de filtro FRL', 'conector de aire'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar el posicionador', correcta: false, repuestos: [],
+      siIncorrecta: 'US$ perdidos: sin aire suficiente, el posicionador nuevo tampoco mueve la válvula.' },
+    { id: 'r3', nombre: 'Desarmar el actuador buscando el pegado', correcta: false, repuestos: [],
+      siIncorrecta: 'Horas perdidas: el actuador estaba sano, lo que faltaba era aire.' },
+  ],
+  repuestosDisponibles: ['elemento de filtro FRL', 'conector de aire', 'posicionador nuevo', 'kit de actuador'],
+  leccion: {
+    texto: 'Sin aire de instrumentos limpio y a presión, ninguna válvula de control responde. Revisá el suministro (presión, FRL, fugas) antes que el posicionador.',
+    datoILC: 'El aire de instrumentos húmedo o insuficiente es causa recurrente de "válvulas que no responden" en fábrica.',
+  },
+};
+
+const I3 = {
+  id: 'I3', especialidad: 'INS', nivel: 3,
+  equipo: 'Lazo de nivel 4-20 mA',
+  titulo: 'Falla de lazo (lectura en 0 mA)',
+  sintoma: 'El DCS marca "sensor fault" y el nivel del tanque cae a 0 mA. Empezó intermitente, ahora es permanente.',
+  contexto: 'Transmisor de nivel a tarjeta de entrada analógica (AI) del PLC. Cableado por bandeja.',
+  tiempoMin: 25,
+  puntos: [
+    { id: 'p1', nombre: 'Lectura de mA en la tarjeta / DCS', costo: 2,
+      pista: '0 mA: o el lazo está abierto o no hay alimentación. Falta ubicar dónde.',
+      apunta: ['h3'], descarta: [] },
+    { id: 'p2', nombre: 'Medir 24 VDC de alimentación del lazo', costo: 4,
+      pista: 'Tensión presente y correcta → descarta caída de la fuente.',
+      apunta: [], descarta: ['h4'] },
+    { id: 'p3', nombre: 'Medir mA seccionando el lazo por tramos', costo: 7,
+      pista: 'Hay corriente hasta el borne de la caja de campo; después se pierde. Localiza el corte.',
+      apunta: ['h3'], descarta: ['h2'], clave: true },
+    { id: 'p4', nombre: 'Inspección de borneras y terminales', costo: 5,
+      pista: 'Terminal flojo y oxidado en la caja de campo: el lazo queda abierto de forma intermitente.',
+      apunta: ['h3'], descarta: [], clave: true },
+    { id: 'p5', nombre: 'Simular el transmisor con calibrador de mA en la entrada', costo: 6,
+      pista: 'La tarjeta lee bien la corriente inyectada → descarta tarjeta y transmisor.',
+      apunta: [], descarta: ['h2'] },
+    { id: 'p6', nombre: 'Continuidad del cable de campo', costo: 5,
+      pista: 'Continuidad correcta salvo en el tramo del borne dañado. Apoya el lazo abierto.',
+      apunta: ['h3'], descarta: [] },
+  ],
+  hipotesis: [
+    { id: 'h1', nombre: 'Transmisor quemado' },
+    { id: 'h2', nombre: 'Tarjeta de entrada analógica dañada' },
+    { id: 'h3', nombre: 'Lazo abierto por terminal flojo/oxidado (causa)', real: true },
+    { id: 'h4', nombre: 'Fuente de 24 VDC caída' },
+  ],
+  reparaciones: [
+    { id: 'r1', nombre: 'Rehacer el terminal (limpiar, apretar a torque / empalmar) + verificar mA de extremo a extremo', correcta: true,
+      repuestos: ['borne / terminal', 'férula de conexión'], siIncorrecta: null },
+    { id: 'r2', nombre: 'Cambiar el transmisor', correcta: false, repuestos: [],
+      siIncorrecta: 'Sigue en falla: la corriente nunca llega por el borne flojo.' },
+    { id: 'r3', nombre: 'Cambiar la tarjeta de entrada analógica', correcta: false, repuestos: [],
+      siIncorrecta: 'Gasto inútil: la tarjeta estaba sana y el lazo seguía abierto.' },
+  ],
+  repuestosDisponibles: ['borne / terminal', 'férula de conexión', 'transmisor nuevo', 'tarjeta AI nueva'],
+  leccion: {
+    texto: 'En 4-20 mA, un "lazo abierto" se caza midiendo la corriente por tramos y revisando terminales. Nunca condenes el transmisor ni la tarjeta sin seccionar el lazo: divide y vencerás.',
+    datoILC: 'Las conexiones flojas u oxidadas son la causa #1 de fallas de lazo — el mismo patrón que en tableros, donde el 80% de los puntos calientes son conexiones.',
+  },
+};
+
+// ---------------------------------------------------------------
+// Exportaciones
+// ---------------------------------------------------------------
+const CASOS = [M1, M2, M3, M4, M5, M6, E1, E2, E3, E4, E5, E6, I1, I2, I3];
+const CASOS_POR_ID = Object.fromEntries(CASOS.map((c) => [c.id, c]));
+
+/* ===== js/rutas.js ===== */
+
+// ============================================================
+// rutas.js — Modo Ruta de Inspección (brief §6). SOLO DATOS.
+// ------------------------------------------------------------
+// Cada ruta muestra un equipo y una lista MEZCLADA de puntos reales
+// (con su frecuencia D/S/M) + distractores creíbles. El jugador marca
+// cuáles pertenecen a la ruta preventiva y con qué frecuencia.
+//
+// Esquema de un punto:
+//   { id, nombre, pertenece:true,  frecuencia:'D'|'S'|'M', nota? }  // correcto
+//   { id, nombre, pertenece:false, motivo }                        // distractor
+//
+// Frecuencias: D = Diario · S = Semanal · M = Mensual (o programado).
+// ============================================================
+const FRECUENCIAS = {
+  D: 'Diario',
+  S: 'Semanal',
+  M: 'Mensual',
+};
+
+const R1 = {
+  id: 'RB', equipo: 'Bomba centrífuga', titulo: 'Ruta semanal', tiempoSeg: 90,
+  puntos: [
+    { id: 'a1', nombre: 'Fuga por sello / empaques', pertenece: true, frecuencia: 'S' },
+    { id: 'a2', nombre: 'Vibración en los 4 puntos (rodamientos)', pertenece: true, frecuencia: 'S' },
+    { id: 'a3', nombre: 'Temperatura de rodamientos', pertenece: true, frecuencia: 'S' },
+    { id: 'a4', nombre: 'Presión de succión / descarga', pertenece: true, frecuencia: 'S' },
+    { id: 'a5', nombre: 'Estado del acople', pertenece: true, frecuencia: 'S' },
+    { id: 'a6', nombre: 'Ruido de cavitación (escucha)', pertenece: true, frecuencia: 'D' },
+    { id: 'a7', nombre: 'Apriete de pernos de anclaje', pertenece: true, frecuencia: 'M' },
+    { id: 'a8', nombre: 'Limpieza general del equipo', pertenece: true, frecuencia: 'S' },
+    { id: 'd1', nombre: 'Megado del motor cada semana', pertenece: false, motivo: 'El megado es trimestral, no semanal.' },
+    { id: 'd2', nombre: 'Desmontar el impulsor para revisarlo', pertenece: false, motivo: 'Es intervención en paro, no ruta de inspección.' },
+    { id: 'd3', nombre: 'Cambiar la grasa cada semana', pertenece: false, motivo: 'El engrase tiene su frecuencia; no es semanal indiscriminado.' },
+    { id: 'd4', nombre: 'Cambiar el sello preventivamente cada semana', pertenece: false, motivo: 'El sello se cambia por condición, no en ruta.' },
+  ],
+};
+
+const R2 = {
+  id: 'RR', equipo: 'Reductor de molino', titulo: 'Ruta diaria (en zafra)', tiempoSeg: 90,
+  puntos: [
+    { id: 'a1', nombre: 'Nivel de aceite', pertenece: true, frecuencia: 'D' },
+    { id: 'a2', nombre: 'Temperatura de aceite', pertenece: true, frecuencia: 'D' },
+    { id: 'a3', nombre: 'Fugas por retenes', pertenece: true, frecuencia: 'D' },
+    { id: 'a4', nombre: 'Presión de lubricación', pertenece: true, frecuencia: 'D' },
+    { id: 'a5', nombre: 'Vibración / ruido', pertenece: true, frecuencia: 'D' },
+    { id: 'a6', nombre: 'ΔT del enfriador de aceite', pertenece: true, frecuencia: 'D' },
+    { id: 'a7', nombre: 'Inspección visual de dientes por mirilla', pertenece: true, frecuencia: 'S' },
+    { id: 'a8', nombre: 'Apriete visual de anclaje', pertenece: true, frecuencia: 'S' },
+    { id: 'd1', nombre: 'Análisis de laboratorio de aceite a diario', pertenece: false, motivo: 'El análisis de aceite es mensual, no diario.' },
+    { id: 'd2', nombre: 'Abrir la tapa de inspección para ver engranes', pertenece: false, motivo: 'Solo se abre en paro programado.' },
+    { id: 'd3', nombre: 'Cambio de aceite semanal', pertenece: false, motivo: 'El cambio de aceite es programado, no semanal.' },
+    { id: 'd4', nombre: 'Torquear todos los pernos con torquímetro a diario', pertenece: false, motivo: 'A diario basta el apriete visual; el torque es programado.' },
+  ],
+};
+
+const R3 = {
+  id: 'RM', equipo: 'Motor de inducción', titulo: 'Ruta semanal', tiempoSeg: 90,
+  puntos: [
+    { id: 'a1', nombre: 'Limpieza de ventilación', pertenece: true, frecuencia: 'S', nota: 'Crítico por el bagacillo.' },
+    { id: 'a2', nombre: 'Temperatura de carcasa', pertenece: true, frecuencia: 'S' },
+    { id: 'a3', nombre: 'Corriente vs placa', pertenece: true, frecuencia: 'S' },
+    { id: 'a4', nombre: 'Ruido de rodamientos', pertenece: true, frecuencia: 'S' },
+    { id: 'a5', nombre: 'Estado de la caja de conexiones', pertenece: true, frecuencia: 'S' },
+    { id: 'a6', nombre: 'Conexión a tierra visible', pertenece: true, frecuencia: 'S' },
+    { id: 'a7', nombre: 'Vibración del motor', pertenece: true, frecuencia: 'S' },
+    { id: 'a8', nombre: 'Estado de bornes y prensaestopas', pertenece: true, frecuencia: 'M' },
+    { id: 'd1', nombre: 'Megado del motor cada semana', pertenece: false, motivo: 'El megado es trimestral.' },
+    { id: 'd2', nombre: 'Abrir tapas con el motor en marcha', pertenece: false, motivo: '¡Peligro! Jamás con el motor energizado.' },
+    { id: 'd3', nombre: 'Engrase semanal indiscriminado', pertenece: false, motivo: 'El engrase sigue el plan del fabricante, no es semanal.' },
+    { id: 'd4', nombre: 'Rebobinar preventivamente', pertenece: false, motivo: 'No es una actividad de ruta.' },
+  ],
+};
+
+const R4 = {
+  id: 'RC', equipo: 'Panel CCM', titulo: 'Ruta mensual (con termografía)', tiempoSeg: 90,
+  puntos: [
+    { id: 'a1', nombre: 'Termografía bajo carga', pertenece: true, frecuencia: 'M' },
+    { id: 'a2', nombre: 'Apriete programado (en ventana segura)', pertenece: true, frecuencia: 'M' },
+    { id: 'a3', nombre: 'Limpieza y hermeticidad del tablero', pertenece: true, frecuencia: 'M' },
+    { id: 'a4', nombre: 'Estado de contactores', pertenece: true, frecuencia: 'M' },
+    { id: 'a5', nombre: 'Ajuste de protecciones vs corriente real', pertenece: true, frecuencia: 'M' },
+    { id: 'a6', nombre: 'Señalización y LOTO disponible', pertenece: true, frecuencia: 'M' },
+    { id: 'a7', nombre: 'Inspección visual de barras y aisladores', pertenece: true, frecuencia: 'M' },
+    { id: 'd1', nombre: 'Reapriete con el panel energizado (sin ventana)', pertenece: false, motivo: 'Viola LOTO: reapriete solo en ventana segura.' },
+    { id: 'd2', nombre: 'Sopletear el tablero con el equipo en carga', pertenece: false, motivo: 'Peligro: nunca con el panel energizado.' },
+    { id: 'd3', nombre: '"Prueba" de disparo en operación', pertenece: false, motivo: 'Interrumpe el proceso; no es parte de la ruta.' },
+    { id: 'd4', nombre: 'Cambiar contactores cada mes', pertenece: false, motivo: 'Se cambian por condición, no en ruta.' },
+  ],
+};
+const RUTAS = [R1, R2, R3, R4];
+const RUTAS_POR_ID = Object.fromEntries(RUTAS.map((r) => [r.id, r]));
+
+
+/* ===== js/rng.js ===== */
+
+// ============================================================
+// rng.js — Generador de números aleatorios con semilla (mulberry32)
+// ------------------------------------------------------------
+// Mismo motor de azar que ZAFRA: determinismo total (misma semilla
+// => misma secuencia), estado serializable en un entero de 32 bits.
+// En "El Diagnóstico" el SCORING NO depende del azar: el RNG solo
+// se usa para barajar el orden de presentación de puntos/repuestos
+// en la UI, de forma reproducible.
+// ============================================================
+
+/** Crea un RNG con semilla, con get/setState para persistir el cursor. */
+function makeRng(seed) {
+  let a = seed >>> 0;
+  const rng = () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  rng.getState = () => a >>> 0;
+  rng.setState = (s) => { a = s >>> 0; };
+  return rng;
+}
+
+/** Entero uniforme en [min, max] (ambos inclusive). */
+function randInt(rng, min, max) {
+  return Math.floor(min + rng() * (max - min + 1));
+}
+
+/** Baraja una copia del arreglo (Fisher-Yates) de forma determinista. */
+function barajar(rng, arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = randInt(rng, 0, i);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ===== js/engine.js ===== */
+
+// ============================================================
+// engine.js — Motor PURO de "EL DIAGNÓSTICO: Taller ILC"
+// ------------------------------------------------------------
+// Regla de oro (igual que ZAFRA): sin DOM, sin Math.random(),
+// sin estado global. El SCORING es 100% determinista a partir
+// de las decisiones del jugador; el azar (barajar) es solo de
+// presentación en la UI y NO afecta el puntaje.
+//
+// Ciclo de vida del estado de un caso:
+//   crearEstadoCaso(caso)              -> estado en fase 'inspeccion'
+//   revelarPunto(estado, puntoId)      -> gasta minutos y devuelve la pista
+//   indicadores(estado)                -> apoya/descarta por hipótesis
+//   diagnosticar(estado, hipId)        -> fija el diagnóstico (congela "a ciegas")
+//   reparar(estado, repId, repuestos)  -> fija reparación + repuestos
+//   evaluarCaso(estado)                -> desglose de score + narrativa + lección
+//   jugarCaso(caso, jugador)           -> atajo determinista de fin a fin
+// ============================================================
+
+
+
+
+
+const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+
+// ------------------------------------------------------------
+// Configuración de puntaje (brief §3.2). Todo tunable aquí.
+// ------------------------------------------------------------
+const SCORING = {
+  diagnostico: { correcto: 50, parcial: 25 },
+  eficiencia: { max: 25, penalIrrelevante: 0.15 }, // 25 × (claveRev/claveTot) × (1 − irrelevantes×0.15)
+  reparacion: { intervencion: 15, repuestos: 10 },  // suman 25
+  penalRetorno: 20,   // reparación incorrecta -> el equipo regresa
+  penalACiegas: 10,   // diagnosticar con < min(2, claveTotales) pistas clave
+  umbralACiegas: 2,
+};
+
+// ------------------------------------------------------------
+// Helpers de acceso
+// ------------------------------------------------------------
+function getCaso(estado) {
+  const caso = CASOS_POR_ID[estado.casoId];
+  if (!caso) throw new Error(`Caso desconocido: ${estado.casoId}`);
+  return caso;
+}
+const puntoDe = (caso, id) => caso.puntos.find((p) => p.id === id);
+const puntosClaveTotales = (caso) => caso.puntos.filter((p) => p.clave).length;
+
+// ------------------------------------------------------------
+// 1. Estado inicial de un caso
+// ------------------------------------------------------------
+function crearEstadoCaso(caso) {
+  return {
+    casoId: caso.id,
+    tiempoMin: caso.tiempoMin,
+    tiempoRestante: caso.tiempoMin,
+    revelados: [],            // ids de puntos revelados, en orden
+    diagnostico: null,        // hipId elegido
+    claveAlDiagnosticar: null,// # de pistas clave reveladas al momento de diagnosticar
+    reparacion: null,         // repId elegido
+    repuestosSel: [],         // repuestos marcados por el jugador
+    fase: 'inspeccion',       // 'inspeccion' | 'reparacion' | 'fin'
+    log: [],
+  };
+}
+
+// ------------------------------------------------------------
+// 2. Inspección — revelar un punto (gasta minutos)
+// ------------------------------------------------------------
+// Devuelve { ok, motivo?, pista? }. No lanza: la UI decide qué mostrar.
+function revelarPunto(estado, puntoId) {
+  if (estado.fase !== 'inspeccion') return { ok: false, motivo: 'La inspección ya cerró.' };
+  const caso = getCaso(estado);
+  const punto = puntoDe(caso, puntoId);
+  if (!punto) return { ok: false, motivo: 'Punto inexistente.' };
+  if (estado.revelados.includes(puntoId)) return { ok: false, motivo: 'Ya revelaste ese punto.' };
+  if (punto.costo > estado.tiempoRestante) return { ok: false, motivo: 'No te queda tiempo para eso.' };
+
+  estado.tiempoRestante -= punto.costo;
+  estado.revelados.push(puntoId);
+  estado.log.push(`Inspección (${punto.costo} min): ${punto.nombre} → ${punto.pista}`);
+  return { ok: true, pista: punto.pista };
+}
+
+// Indicadores por hipótesis según los puntos ya revelados.
+// { [hipId]: { apoya, descarta, estado:'apoya'|'descarta'|'mixto'|'sin' } }
+function indicadores(estado) {
+  const caso = getCaso(estado);
+  const out = {};
+  for (const h of caso.hipotesis) out[h.id] = { apoya: 0, descarta: 0, estado: 'sin' };
+  for (const id of estado.revelados) {
+    const p = puntoDe(caso, id);
+    for (const hid of p.apunta || []) if (out[hid]) out[hid].apoya += 1;
+    for (const hid of p.descarta || []) if (out[hid]) out[hid].descarta += 1;
+  }
+  for (const h of caso.hipotesis) {
+    const o = out[h.id];
+    if (o.apoya && o.descarta) o.estado = 'mixto';
+    else if (o.apoya) o.estado = 'apoya';
+    else if (o.descarta) o.estado = 'descarta';
+  }
+  return out;
+}
+
+// Nº de pistas clave reveladas hasta ahora.
+function pistasClaveReveladas(estado) {
+  const caso = getCaso(estado);
+  return estado.revelados.filter((id) => puntoDe(caso, id).clave).length;
+}
+
+// ------------------------------------------------------------
+// 3. Diagnóstico — congela la "certeza" al momento de decidir
+// ------------------------------------------------------------
+function diagnosticar(estado, hipId) {
+  const caso = getCaso(estado);
+  if (!caso.hipotesis.some((h) => h.id === hipId)) return { ok: false, motivo: 'Hipótesis inexistente.' };
+  estado.diagnostico = hipId;
+  estado.claveAlDiagnosticar = pistasClaveReveladas(estado);
+  estado.fase = 'reparacion';
+  const h = caso.hipotesis.find((x) => x.id === hipId);
+  estado.log.push(`Diagnóstico: ${h.nombre} (con ${estado.claveAlDiagnosticar} pista(s) clave).`);
+  return { ok: true };
+}
+
+// ------------------------------------------------------------
+// 4. Reparación + repuestos
+// ------------------------------------------------------------
+function reparar(estado, repId, repuestos = []) {
+  const caso = getCaso(estado);
+  const rep = caso.reparaciones.find((r) => r.id === repId);
+  if (!rep) return { ok: false, motivo: 'Reparación inexistente.' };
+  estado.reparacion = repId;
+  estado.repuestosSel = [...repuestos];
+  estado.fase = 'fin';
+  estado.log.push(`Reparación: ${rep.nombre}.`);
+  return { ok: true };
+}
+
+// ¿El jugador marcó exactamente los repuestos requeridos por la reparación?
+function repuestosCompletos(requeridos, seleccionados) {
+  const req = requeridos || [];
+  const todosPresentes = req.every((r) => seleccionados.includes(r));
+  const sinDistractores = seleccionados.every((s) => req.includes(s));
+  return todosPresentes && sinDistractores;
+}
+
+// ------------------------------------------------------------
+// 5. Evaluación del caso (100 pts, brief §3.2)
+// ------------------------------------------------------------
+function evaluarCaso(estado, scoring = SCORING) {
+  const caso = getCaso(estado);
+
+  // --- Diagnóstico ---
+  const hip = caso.hipotesis.find((h) => h.id === estado.diagnostico) || null;
+  let ptsDiagnostico = 0;
+  if (hip?.real) ptsDiagnostico = scoring.diagnostico.correcto;
+  else if (hip?.parcial) ptsDiagnostico = scoring.diagnostico.parcial;
+
+  // --- Eficiencia de inspección ---
+  const claveTot = puntosClaveTotales(caso);
+  const claveRev = pistasClaveReveladas(estado);
+  const irrelevantesRev = estado.revelados.filter((id) => !puntoDe(caso, id).clave).length;
+  const cobertura = claveTot > 0 ? claveRev / claveTot : 1;
+  const factorRuido = Math.max(0, 1 - irrelevantesRev * scoring.eficiencia.penalIrrelevante);
+  const ptsEficiencia = clamp(scoring.eficiencia.max * cobertura * factorRuido, 0, scoring.eficiencia.max);
+
+  // --- Reparación + repuestos ---
+  const rep = caso.reparaciones.find((r) => r.id === estado.reparacion) || null;
+  let ptsReparacion = 0;
+  let narrativa = null;
+  let equipoRegresa = false;
+  if (rep) {
+    if (rep.correcta) {
+      const completos = repuestosCompletos(rep.repuestos, estado.repuestosSel);
+      ptsReparacion = scoring.reparacion.intervencion + (completos ? scoring.reparacion.repuestos : 0);
+    } else {
+      equipoRegresa = true;
+      narrativa = rep.siIncorrecta;
+    }
+  }
+
+  // --- Penalizaciones ---
+  const penalRetorno = equipoRegresa ? scoring.penalRetorno : 0;
+  const umbral = Math.min(scoring.umbralACiegas, claveTot || scoring.umbralACiegas);
+  const claveDecision = estado.claveAlDiagnosticar ?? claveRev;
+  const aCiegas = hip !== null && claveDecision < umbral;
+  const penalACiegas = aCiegas ? scoring.penalACiegas : 0;
+
+  const total = clamp(
+    ptsDiagnostico + ptsEficiencia + ptsReparacion - penalRetorno - penalACiegas,
+    0, 100,
+  );
+
+  return {
+    casoId: caso.id,
+    total: Math.round(total * 10) / 10,
+    aprobado: !equipoRegresa && hip?.real === true,
+    componentes: {
+      diagnostico: Math.round(ptsDiagnostico * 10) / 10,
+      eficiencia: Math.round(ptsEficiencia * 10) / 10,
+      reparacion: Math.round(ptsReparacion * 10) / 10,
+    },
+    penalizaciones: { retorno: penalRetorno, aCiegas: penalACiegas },
+    detalle: {
+      diagnosticoElegido: hip?.nombre ?? null,
+      diagnosticoCorrecto: !!hip?.real,
+      claveReveladas: claveRev,
+      claveTotales: claveTot,
+      puntosIrrelevantes: irrelevantesRev,
+      minutosUsados: estado.tiempoMin - estado.tiempoRestante,
+      reparacionCorrecta: !!rep?.correcta,
+      equipoRegresa,
+    },
+    narrativa,             // "Día +5: la bomba fuga otra vez…" si el equipo regresa
+    leccion: caso.leccion, // pantalla de lección con el dato real ILC
+  };
+}
+
+// ------------------------------------------------------------
+// 6. Barajado de presentación (para la UI, no afecta el score)
+// ------------------------------------------------------------
+function barajarCaso(caso, seed) {
+  const rng = makeRng(seed >>> 0);
+  return {
+    ...caso,
+    puntos: barajar(rng, caso.puntos),
+    hipotesis: barajar(rng, caso.hipotesis),
+    reparaciones: barajar(rng, caso.reparaciones),
+    repuestosDisponibles: barajar(rng, caso.repuestosDisponibles),
+  };
+}
+
+// ============================================================
+// MODO RUTA DE INSPECCIÓN (brief §6) — scoring puro
+// ------------------------------------------------------------
+// +10 por marcar un punto que pertenece; bonus por frecuencia
+// correcta; −5 por marcar un distractor. Puntos omitidos: 0.
+// selecciones: { [puntoId]: 'D'|'S'|'M' }  (presencia = marcado)
+// ============================================================
+const SCORING_RUTA = { acierto: 10, frecuencia: 5, distractor: 5 };
+function barajarRuta(ruta, seed) {
+  const rng = makeRng(seed >>> 0);
+  return { ...ruta, puntos: barajar(rng, ruta.puntos) };
+}
+function evaluarRuta(ruta, selecciones = {}, scoring = SCORING_RUTA) {
+  let total = 0, totalMax = 0;
+  let aciertos = 0, omitidos = 0, distractoresMarcados = 0, frecuenciasCorrectas = 0;
+  const detalle = [];
+
+  for (const p of ruta.puntos) {
+    const marcado = Object.prototype.hasOwnProperty.call(selecciones, p.id);
+    const frecElegida = selecciones[p.id] || null;
+    let ganado = 0;
+    let frecuenciaOk = false;
+
+    if (p.pertenece) {
+      totalMax += scoring.acierto + scoring.frecuencia;
+      if (marcado) {
+        ganado += scoring.acierto;
+        aciertos += 1;
+        if (frecElegida === p.frecuencia) { ganado += scoring.frecuencia; frecuenciaOk = true; frecuenciasCorrectas += 1; }
+      } else {
+        omitidos += 1;
+      }
+    } else if (marcado) {
+      ganado -= scoring.distractor;
+      distractoresMarcados += 1;
+    }
+
+    total += ganado;
+    detalle.push({
+      id: p.id, nombre: p.nombre, pertenece: p.pertenece,
+      marcado, frecuenciaElegida: frecElegida, frecuenciaCorrecta: p.frecuencia || null,
+      frecuenciaOk, ganado, motivo: p.motivo || null, nota: p.nota || null,
+    });
+  }
+
+  const totalPct = totalMax > 0 ? clamp(Math.round((total / totalMax) * 100), 0, 100) : 0;
+  const perteneceTot = ruta.puntos.filter((p) => p.pertenece).length;
+  return {
+    rutaId: ruta.id, total, totalMax, totalPct,
+    aciertos, omitidos, distractoresMarcados, frecuenciasCorrectas, perteneceTot,
+    detalle,
+  };
+}
+
+// ------------------------------------------------------------
+// 7. Atajo de simulación (para jugadores/tests)
+// ------------------------------------------------------------
+// jugador: (estado, caso) => void  (conduce el caso vía las funciones del motor)
+function jugarCaso(caso, jugador) {
+  const estado = crearEstadoCaso(caso);
+  jugador(estado, caso);
+  return { estado, resultado: evaluarCaso(estado) };
+}
+
+/* ===== js/ui.js ===== */
+
+// ============================================================
+// ui.js — Render de las 5 pantallas del Modo Diagnóstico.
+// Funciones PURAS: reciben el estado de presentación y devuelven
+// HTML (string). Los eventos y las transiciones viven en main.js.
+// ============================================================
+
+
+
+
+
+// Rangos de progresión por puntaje acumulado (por especialidad).
+const RANGOS = [
+  { min: 0, nombre: 'Aprendiz' },
+  { min: 150, nombre: 'Técnico' },
+  { min: 350, nombre: 'Especialista' },
+];
+const RANGO_TOPE = 500; // para la barra de progreso
+function rangoDe(puntaje) {
+  let r = RANGOS[0];
+  for (const x of RANGOS) if (puntaje >= x.min) r = x;
+  return r;
+}
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const ESP = { MEC: 'Mecánico', ELE: 'Electricista', INS: 'Instrumentista' };
+const ESP_TALLER = { MEC: 'TAM', ELE: 'TAE', INS: 'MTI' };
+const NIVEL = { 1: 'Aprendiz', 2: 'Técnico', 3: 'Especialista' };
+
+// ¿Está desbloqueado el caso? Nivel 1 siempre; nivel N exige
+// haber aprobado algún caso de nivel N-1 de la misma especialidad.
+function desbloqueado(caso, progreso) {
+  if (caso.nivel <= 1) return true;
+  return CASOS.some((c) => c.especialidad === caso.especialidad && c.nivel === caso.nivel - 1 && progreso.aprobado[c.id]);
+}
+
+// ------------------------------------------------------------
+// Pantalla 1 — Inicio
+// ------------------------------------------------------------
+function pantallaInicio(app) {
+  const modo = app.modo || 'diagnostico';
+  const modoTabs = `
+    <div class="tabs">
+      <button data-modo="diagnostico" class="${modo === 'diagnostico' ? 'sel' : ''}">🩺 Diagnóstico</button>
+      <button data-modo="ruta" class="${modo === 'ruta' ? 'sel' : ''}">📋 Ruta de inspección</button>
+    </div>`;
+  if (modo === 'ruta') return modoTabs + pantallaRutasInterna();
+
+  const { especialidad, progreso } = app;
+  const casos = CASOS.filter((c) => c.especialidad === especialidad);
+  const acum = casos.reduce((a, c) => a + (progreso.best[c.id] || 0), 0);
+  const rango = rangoDe(acum);
+  const pct = Math.min(100, Math.round((acum / RANGO_TOPE) * 100));
+
+  const porNivel = [1, 2, 3].map((nivel) => {
+    const grupo = casos.filter((c) => c.nivel === nivel);
+    if (!grupo.length) return '';
+    const cards = grupo.map((c) => casoCard(c, progreso)).join('');
+    return `<div class="nivel-titulo">Nivel ${nivel} · ${NIVEL[nivel]}</div><div class="caso-lista">${cards}</div>`;
+  }).join('');
+
+  return `
+    ${modoTabs}
+    <div class="narrativa">
+      <h2>Elegí un caso del taller</h2>
+      <p>Recibís un equipo con un síntoma y un presupuesto de tiempo de inspección.
+      Revisá con criterio, diagnosticá la causa y reparala bien. Cambiar la pieza sin
+      buscar la causa hace que el equipo <b>regrese</b>.</p>
+    </div>
+    <div class="tabs tabs-esp">
+      <button data-esp="MEC" class="${especialidad === 'MEC' ? 'sel' : ''}">🔧 ${ESP.MEC}<small>TAM</small></button>
+      <button data-esp="ELE" class="${especialidad === 'ELE' ? 'sel' : ''}">⚡ ${ESP.ELE}<small>TAE</small></button>
+      <button data-esp="INS" class="${especialidad === 'INS' ? 'sel' : ''}">🎛️ ${ESP.INS}<small>MTI</small></button>
+    </div>
+    <div class="progreso-barra">
+      <span class="rango">${rango.nombre}</span>
+      <span class="track"><i style="width:${pct}%"></i></span>
+      <span>${acum} pts</span>
+    </div>
+    ${porNivel}`;
+}
+
+function casoCard(caso, progreso) {
+  const abierto = desbloqueado(caso, progreso);
+  const best = progreso.best[caso.id];
+  const aprobado = progreso.aprobado[caso.id];
+  const estado = !abierto
+    ? '<span class="estado lock">🔒</span>'
+    : (aprobado ? '<span class="estado done">✓</span>' : '');
+  const mejor = best != null ? `<div class="mejor">Mejor puntaje: <b>${best}</b></div>` : '';
+  return `
+    <button class="caso-card ${abierto ? '' : 'bloqueada'}" ${abierto ? `data-caso="${caso.id}"` : 'disabled'}>
+      ${estado}
+      <span class="cod">${caso.id}</span>
+      <div class="equipo">${esc(caso.equipo)}</div>
+      <div class="tit">${esc(caso.titulo)}</div>
+      ${mejor}
+    </button>`;
+}
+
+// ------------------------------------------------------------
+// Pantalla 2 — Inspección
+// ------------------------------------------------------------
+const dosDig = (n) => String(n).padStart(2, '0');
+const horaSim = (min) => `${dosDig(Math.floor(min / 60) % 24)}:${dosDig(min % 60)}`;
+function pantallaInspeccion(app) {
+  const { view, estado } = app;
+  const usados = estado.tiempoMin - estado.tiempoRestante;
+  const pct = Math.round((estado.tiempoRestante / estado.tiempoMin) * 100);
+  const poco = pct <= 30 ? 'poco' : '';
+  const recienId = app.ultimoRevelado;
+  const son = app.sonido !== false;
+
+  const puntos = view.puntos.map((p) => {
+    const rev = estado.revelados.includes(p.id);
+    const noAlcanza = !rev && p.costo > estado.tiempoRestante;
+    const recien = rev && p.id === recienId;
+    const cls = [rev ? 'rev' : (noAlcanza ? 'no' : ''), recien ? 'recien' : '', recien && p.clave ? 'clave-hit' : ''].join(' ').trim();
+    const attr = rev || noAlcanza ? '' : `data-punto="${p.id}"`;
+    const badge = rev && p.clave ? '<span class="clave-badge">★ clave</span>' : '';
+    const pista = rev ? `<div class="pista">${esc(p.pista)}</div>` : '';
+    return `
+      <div class="punto ${cls}" ${attr}>
+        <div class="top">
+          <span class="nombre">${esc(p.nombre)}${badge}</span>
+          <span class="costo">${rev ? '✓' : p.costo + ' min'}</span>
+        </div>
+        ${pista}
+      </div>`;
+  }).join('');
+
+  const ind = indicadores(estado);
+  const hips = view.hipotesis.map((h) => {
+    const o = ind[h.id];
+    const icoTxt = o.estado === 'apoya' ? '✓' : o.estado === 'descarta' ? '✗' : o.estado === 'mixto' ? '±' : '—';
+    const cuenta = o.apoya || o.descarta ? `${o.apoya}✓ · ${o.descarta}✗` : 'sin datos';
+    return `<div class="hip ${o.estado}"><span class="ico">${icoTxt}</span><span class="nombre">${esc(h.nombre)}</span><span class="cuenta">${cuenta}</span></div>`;
+  }).join('');
+
+  // Bitácora tipo log con hora simulada (turno arranca 07:00).
+  let acum = 0;
+  const lineas = estado.revelados.map((id) => {
+    const p = view.puntos.find((x) => x.id === id);
+    if (!p) return '';
+    acum += p.costo;
+    return `<div class="linea ${p.clave ? 'clave' : ''}"><span class="h">${horaSim(7 * 60 + acum)}</span> <span class="txt">${esc(p.nombre)}</span></div>`;
+  }).join('');
+  const bitacora = estado.revelados.length
+    ? `<div class="bitacora"><div class="t">Bitácora · turno</div>${lineas}</div>` : '';
+
+  return `
+    <div class="card sintoma">
+      <div class="equipo-tag">${view.id} · ${esc(view.equipo)}</div>
+      <h2>${esc(view.titulo)}</h2>
+      <p>${esc(view.sintoma)}</p>
+      <div class="contexto">${esc(view.contexto)}</div>
+    </div>
+
+    <div class="reloj">
+      <div class="lbl"><span>Tiempo de inspección</span><b>${estado.tiempoRestante} / ${estado.tiempoMin} min</b></div>
+      <div class="track"><i class="${poco}" style="width:${pct}%"></i></div>
+    </div>
+
+    <div class="acciones-insp">
+      <span class="seccion-lbl" style="margin:0">Puntos — tocá para revisar</span>
+      <button class="toggle-son" data-sonido>${son ? '🔊 sonido' : '🔇 silencio'}</button>
+    </div>
+    <div class="card"><div class="puntos">${puntos}</div></div>
+
+    <div class="card">
+      <div class="seccion-lbl">Hipótesis (${usados} min usados)</div>
+      <div class="hipotesis">${hips}</div>
+    </div>
+
+    ${bitacora}
+
+    <button class="btn btn-primary" id="btn-diagnosticar">Ya sé qué es — Diagnosticar →</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-ghost" id="btn-abandonar">← Volver al taller</button>`;
+}
+
+// ------------------------------------------------------------
+// Pantalla 3 — Diagnóstico
+// ------------------------------------------------------------
+function pantallaDiagnostico(app) {
+  const { view, estado, seleccionHip } = app;
+  const claveRev = pistasClaveReveladas(estado);
+  const claveTot = view.puntos.filter((p) => p.clave).length;
+  const umbral = Math.min(SCORING.umbralACiegas, claveTot || SCORING.umbralACiegas);
+  const suficiente = claveRev >= umbral;
+  const conf = suficiente
+    ? `<div class="confianza alta">Revelaste ${claveRev} pista(s) clave: tenés base para decidir.</div>`
+    : `<div class="confianza baja">Solo ${claveRev} pista(s) clave. Diagnosticar ahora es "a ciegas" (−${SCORING.penalACiegas} pts aunque aciertes).</div>`;
+
+  const ops = view.hipotesis.map((h) => `
+    <div class="opcion ${seleccionHip === h.id ? 'sel' : ''}" data-hip="${h.id}">
+      <span class="marca"></span><span class="txt">${esc(h.nombre)}</span>
+    </div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="seccion-lbl">${view.id} · ¿Cuál es la causa?</div>
+      ${conf}
+      <div class="opciones">${ops}</div>
+    </div>
+    <button class="btn btn-primary" id="btn-confirmar-dx" ${seleccionHip ? '' : 'disabled'}>Confirmar diagnóstico →</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-ghost" id="btn-volver-insp">← Seguir inspeccionando</button>`;
+}
+
+// ------------------------------------------------------------
+// Pantalla 4 — Reparación + repuestos
+// ------------------------------------------------------------
+function pantallaReparacion(app) {
+  const { view, seleccionRep, repuestosSel } = app;
+  const ops = view.reparaciones.map((r) => `
+    <div class="opcion ${seleccionRep === r.id ? 'sel' : ''}" data-rep="${r.id}">
+      <span class="marca"></span><span class="txt">${esc(r.nombre)}</span>
+    </div>`).join('');
+
+  const hayRepuestos = view.repuestosDisponibles && view.repuestosDisponibles.length;
+  const chips = hayRepuestos
+    ? view.repuestosDisponibles.map((rp) => `<span class="chip ${repuestosSel.includes(rp) ? 'sel' : ''}" data-repuesto="${esc(rp)}">${esc(rp)}</span>`).join('')
+    : '<div class="nota-repuestos">Esta intervención no requiere repuestos: es método y mano de obra.</div>';
+
+  return `
+    <div class="card">
+      <div class="seccion-lbl">${view.id} · ¿Qué intervención hacés?</div>
+      <div class="opciones">${ops}</div>
+    </div>
+    <div class="card">
+      <div class="seccion-lbl">Repuestos a solicitar</div>
+      <div class="repuestos">${chips}</div>
+      ${hayRepuestos ? '<div class="nota-repuestos">Marcá exactamente los que necesita el trabajo. De más o de menos, resta.</div>' : ''}
+    </div>
+    <button class="btn btn-primary" id="btn-reparar" ${seleccionRep ? '' : 'disabled'}>Ejecutar reparación ✓</button>`;
+}
+
+// ------------------------------------------------------------
+// Pantalla 5 — Resultado
+// ------------------------------------------------------------
+function pantallaResultado(app, res) {
+  const c = res.componentes;
+  const p = res.penalizaciones;
+  const veredicto = res.aprobado
+    ? '<div class="veredicto ok">✓ Diagnóstico resuelto</div>'
+    : (res.detalle.equipoRegresa ? '<div class="veredicto mal">✗ El equipo regresó</div>' : '<div class="veredicto mal">Diagnóstico incompleto</div>');
+
+  const fila = (k, val, max, neg) => `
+    <div class="fila ${neg ? 'pen' : ''}">
+      <span class="k">${k}</span>
+      <span class="bar"><i class="${neg ? 'neg' : ''}" style="width:${Math.round((val / max) * 100)}%"></i></span>
+      <span class="v">${neg ? '−' : ''}${val}</span>
+    </div>`;
+
+  const desglose = [
+    fila('Diagnóstico', c.diagnostico, 50, false),
+    fila('Eficiencia', c.eficiencia, 25, false),
+    fila('Reparación', c.reparacion, 25, false),
+    p.retorno ? fila('Retorno del equipo', p.retorno, 20, true) : '',
+    p.aCiegas ? fila('Diagnóstico a ciegas', p.aCiegas, 10, true) : '',
+  ].join('');
+
+  const regreso = res.narrativa
+    ? `<div class="regreso"><div class="t">Consecuencia</div><p>${esc(res.narrativa)}</p></div>` : '';
+
+  return `
+    <div class="card">
+      <div class="score-hero">
+        <div class="num">${res.total}<small> / 100</small></div>
+        ${veredicto}
+      </div>
+      <div class="desglose">${desglose}</div>
+    </div>
+    ${regreso}
+    <div class="leccion">
+      <div class="t">Lección</div>
+      <p>${esc(res.leccion.texto)}</p>
+      <div class="dato">📊 <b>Dato ILC:</b> ${esc(res.leccion.datoILC)}</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btn-taller">← Al taller</button>
+      <button class="btn btn-primary" id="btn-siguiente">Siguiente caso →</button>
+    </div>`;
+}
+
+// ============================================================
+// MODO RUTA DE INSPECCIÓN (pantalla 6)
+// ============================================================
+
+// Lista de rutas (se renderiza dentro de pantallaInicio cuando modo='ruta').
+function pantallaRutasInterna() {
+  const cards = RUTAS.map((r) => {
+    const n = r.puntos.filter((p) => p.pertenece).length;
+    return `
+      <button class="caso-card" data-ruta="${r.id}">
+        <span class="cod">${r.id}</span>
+        <div class="equipo">${esc(r.equipo)}</div>
+        <div class="tit">${esc(r.titulo)} · ${n} puntos + distractores</div>
+      </button>`;
+  }).join('');
+  return `
+    <div class="narrativa">
+      <h2>Armá la ruta preventiva</h2>
+      <p>Marcá los puntos que <b>sí</b> pertenecen a la ruta y elegí su frecuencia.
+      Los distractores restan. Tenés el reloj en contra.</p>
+    </div>
+    <div class="caso-lista">${cards}</div>`;
+}
+
+// Barra de tiempo de la ruta (se refresca sola cada segundo desde main.js).
+function relojRutaHTML(restante, total) {
+  const pct = Math.max(0, Math.round((restante / total) * 100));
+  const poco = pct <= 30 ? 'poco' : '';
+  return `
+    <div class="lbl"><span>Tiempo</span><b>${restante}s / ${total}s</b></div>
+    <div class="track"><i class="${poco}" style="width:${pct}%"></i></div>`;
+}
+function pantallaRuta(app) {
+  const { rutaView: r, marcas, rutaTiempo } = app;
+  const items = r.puntos.map((p) => {
+    const marcado = Object.prototype.hasOwnProperty.call(marcas, p.id);
+    const frec = marcas[p.id] || null;
+    const chips = marcado
+      ? `<div class="frec-chips">${Object.keys(FRECUENCIAS).map((f) =>
+          `<span class="frec-chip ${frec === f ? 'sel' : ''}" data-ruta-frec="${p.id}:${f}">${f}</span>`).join('')}</div>`
+      : '';
+    return `
+      <div class="ruta-item ${marcado ? 'marcado' : ''}">
+        <div class="fila" data-ruta-punto="${p.id}">
+          <span class="check">${marcado ? '✓' : ''}</span>
+          <span class="nombre">${esc(p.nombre)}</span>
+        </div>
+        ${chips}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="card sintoma">
+      <div class="equipo-tag">${r.id} · ${esc(r.equipo)}</div>
+      <h2>${esc(r.titulo)}</h2>
+      <p>Marcá los puntos de la ruta. Frecuencia: <b>D</b> diario · <b>S</b> semanal · <b>M</b> mensual.</p>
+    </div>
+    <div class="reloj" id="ruta-reloj">${relojRutaHTML(rutaTiempo, r.tiempoSeg)}</div>
+    <div class="card"><div class="ruta-lista">${items}</div></div>
+    <button class="btn btn-primary" id="btn-terminar-ruta">Terminar ruta ✓</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-ghost" id="btn-abandonar-ruta">← Volver</button>`;
+}
+function pantallaRutaResultado(app, res) {
+  const filas = res.detalle.map((d) => {
+    let cls, ico, extra = '';
+    if (d.pertenece && d.marcado) {
+      cls = 'ok'; ico = '✓';
+      extra = d.frecuenciaOk
+        ? `<span class="frec-ok">frecuencia ${d.frecuenciaElegida} ✓</span>`
+        : `<span class="frec-mal">era ${d.frecuenciaCorrecta}${d.frecuenciaElegida ? `, marcaste ${d.frecuenciaElegida}` : ', sin frecuencia'}</span>`;
+    } else if (d.pertenece && !d.marcado) {
+      cls = 'omit'; ico = '○'; extra = `<span class="frec-mal">omitido (era ${d.frecuenciaCorrecta})</span>`;
+    } else if (!d.pertenece && d.marcado) {
+      cls = 'mal'; ico = '✗'; extra = `<span class="frec-mal">${esc(d.motivo || 'distractor')}</span>`;
+    } else {
+      cls = 'bien-omit'; ico = '·'; extra = `<span class="frec-ok">distractor evitado</span>`;
+    }
+    return `<div class="ruta-res ${cls}"><span class="ico">${ico}</span><span class="n">${esc(d.nombre)}</span>${extra}<span class="g">${d.ganado >= 0 ? '+' : ''}${d.ganado}</span></div>`;
+  }).join('');
+
+  return `
+    <div class="card">
+      <div class="score-hero">
+        <div class="num">${res.totalPct}<small> / 100</small></div>
+        <div class="veredicto ${res.totalPct >= 70 ? 'ok' : 'mal'}">${res.total} pts · ${res.aciertos}/${res.perteneceTot} puntos, ${res.frecuenciasCorrectas} frecuencias, ${res.distractoresMarcados} distractores</div>
+      </div>
+    </div>
+    <div class="card"><div class="ruta-detalle">${filas}</div></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btn-rutas">← Rutas</button>
+      <button class="btn btn-primary" id="btn-ruta-reintentar">Reintentar ↻</button>
+    </div>`;
+}
+
+/* ===== js/main.js ===== */
+const ui = { RANGOS, rangoDe, desbloqueado, pantallaInicio, pantallaInspeccion, pantallaDiagnostico, pantallaReparacion, pantallaResultado, relojRutaHTML, pantallaRuta, pantallaRutaResultado };
+
+// ============================================================
+// main.js — Orquestación y máquina de estados de pantallas.
+// La lógica de puntaje vive en engine.js; aquí solo hay estado
+// de presentación, persistencia de progreso y despacho a la UI.
+//
+// Pantallas: inicio → inspeccion → diagnostico → reparacion → resultado
+// ============================================================
+
+
+
+
+
+
+const $ = (sel) => document.querySelector(sel);
+const pantalla = $('#pantalla');
+const pillRango = $('#pill-rango');
+
+// --- Persistencia de progreso (con fallback en memoria si no hay storage) ---
+const CLAVE = 'ilc-diagnostico-progreso';
+function cargarProgreso() {
+  try {
+    const raw = localStorage.getItem(CLAVE);
+    if (raw) return JSON.parse(raw);
+  } catch { /* file:// o storage bloqueado: seguimos en memoria */ }
+  return { best: {}, aprobado: {} };
+}
+function guardarProgreso() {
+  try { localStorage.setItem(CLAVE, JSON.stringify(app.progreso)); } catch { /* sin persistencia */ }
+}
+
+// Fuente de semilla para barajar la presentación (no afecta el puntaje).
+let semillaSeq = (Date.now() % 100000) >>> 0;
+const nuevaSemilla = () => (semillaSeq = (semillaSeq * 1103515245 + 12345) >>> 0);
+
+const app = {
+  pantalla: 'inicio',
+  modo: 'diagnostico', // 'diagnostico' | 'ruta'
+  especialidad: 'MEC',
+  casoId: null,
+  view: null,        // caso con puntos/hipótesis/repuestos barajados (presentación)
+  estado: null,      // estado del motor
+  seleccionHip: null,
+  seleccionRep: null,
+  repuestosSel: [],
+  resultado: null,
+  ultimoRevelado: null, // último punto revelado (para animar solo ese)
+  sonido: true,
+  _ultimaPantalla: null,
+  progreso: cargarProgreso(),
+  // Modo Ruta de Inspección
+  rutaView: null,
+  marcas: {},
+  rutaTiempo: 0,
+  rutaTimer: null,
+  rutaResultado: null,
+};
+
+// ------------------------------------------------------------
+// Render maestro
+// ------------------------------------------------------------
+function render() {
+  actualizarPill();
+  if (app.pantalla === 'inicio') pantalla.innerHTML = ui.pantallaInicio(app);
+  else if (app.pantalla === 'inspeccion') pantalla.innerHTML = ui.pantallaInspeccion(app);
+  else if (app.pantalla === 'diagnostico') pantalla.innerHTML = ui.pantallaDiagnostico(app);
+  else if (app.pantalla === 'reparacion') pantalla.innerHTML = ui.pantallaReparacion(app);
+  else if (app.pantalla === 'resultado') pantalla.innerHTML = ui.pantallaResultado(app, app.resultado);
+  else if (app.pantalla === 'ruta') pantalla.innerHTML = ui.pantallaRuta(app);
+  else if (app.pantalla === 'rutaResultado') pantalla.innerHTML = ui.pantallaRutaResultado(app, app.rutaResultado);
+  // Transición suave y scroll al tope SOLO al cambiar de pantalla; en los
+  // refrescos internos (revelar punto, marcar ítem) se conserva la posición.
+  if (app.pantalla !== app._ultimaPantalla) {
+    pantalla.classList.remove('fade-in');
+    void pantalla.offsetWidth; // fuerza reflow para reiniciar la animación
+    pantalla.classList.add('fade-in');
+    app._ultimaPantalla = app.pantalla;
+    window.scrollTo(0, 0);
+  }
+}
+
+// ------------------------------------------------------------
+// Retroalimentación sutil: háptico + tick de audio (WebAudio)
+// ------------------------------------------------------------
+let _ac = null;
+function tick(fuerte) {
+  if (!app.sonido) return;
+  try {
+    _ac = _ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (_ac.state === 'suspended') _ac.resume();
+    const o = _ac.createOscillator(), g = _ac.createGain();
+    o.type = 'sine';
+    o.frequency.value = fuerte ? 880 : 440;
+    o.connect(g); g.connect(_ac.destination);
+    const t = _ac.currentTime;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(fuerte ? 0.09 : 0.045, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+    o.start(t); o.stop(t + 0.15);
+  } catch { /* sin audio disponible */ }
+}
+function vibrar(patron) { try { if (navigator.vibrate) navigator.vibrate(patron); } catch { /* sin háptico */ } }
+
+function actualizarPill() {
+  if (app.modo === 'ruta') { pillRango.textContent = 'Ruta de inspección'; return; }
+  const casos = CASOS.filter((c) => c.especialidad === app.especialidad);
+  const acum = casos.reduce((a, c) => a + (app.progreso.best[c.id] || 0), 0);
+  pillRango.textContent = `${ui.rangoDe(acum).nombre} · ${acum} pts`;
+}
+
+// ------------------------------------------------------------
+// Transiciones
+// ------------------------------------------------------------
+function abrirCaso(casoId) {
+  const caso = CASOS_POR_ID[casoId];
+  if (!caso || !ui.desbloqueado(caso, app.progreso)) return;
+  app.casoId = casoId;
+  app.view = barajarCaso(caso, nuevaSemilla());
+  app.estado = crearEstadoCaso(caso);
+  app.seleccionHip = null;
+  app.seleccionRep = null;
+  app.repuestosSel = [];
+  app.resultado = null;
+  app.ultimoRevelado = null;
+  app.pantalla = 'inspeccion';
+  render();
+}
+
+function confirmarDiagnostico() {
+  if (!app.seleccionHip) return;
+  diagnosticar(app.estado, app.seleccionHip);
+  app.pantalla = 'reparacion';
+  render();
+}
+
+function ejecutarReparacion() {
+  if (!app.seleccionRep) return;
+  reparar(app.estado, app.seleccionRep, app.repuestosSel);
+  const res = evaluarCaso(app.estado);
+  app.resultado = res;
+  // Guardar mejor puntaje y aprobación.
+  const prev = app.progreso.best[app.casoId] || 0;
+  if (res.total > prev) app.progreso.best[app.casoId] = res.total;
+  if (res.aprobado) app.progreso.aprobado[app.casoId] = true;
+  guardarProgreso();
+  app.pantalla = 'resultado';
+  render();
+}
+
+function siguienteCaso() {
+  const lista = CASOS.filter((c) => c.especialidad === app.especialidad);
+  const i = lista.findIndex((c) => c.id === app.casoId);
+  const siguiente = lista.slice(i + 1).find((c) => ui.desbloqueado(c, app.progreso));
+  if (siguiente) abrirCaso(siguiente.id);
+  else { app.pantalla = 'inicio'; render(); }
+}
+
+// ------------------------------------------------------------
+// Modo Ruta de Inspección
+// ------------------------------------------------------------
+function detenerRutaTimer() { if (app.rutaTimer) { clearInterval(app.rutaTimer); app.rutaTimer = null; } }
+
+function iniciarRutaTimer() {
+  detenerRutaTimer();
+  app.rutaTimer = setInterval(() => {
+    app.rutaTiempo -= 1;
+    const reloj = document.querySelector('#ruta-reloj');
+    if (reloj) reloj.innerHTML = ui.relojRutaHTML(app.rutaTiempo, app.rutaView.tiempoSeg);
+    if (app.rutaTiempo <= 0) terminarRuta();
+  }, 1000);
+}
+
+function abrirRuta(rutaId) {
+  const ruta = RUTAS_POR_ID[rutaId];
+  if (!ruta) return;
+  app.rutaView = barajarRuta(ruta, nuevaSemilla());
+  app.marcas = {};
+  app.rutaTiempo = ruta.tiempoSeg;
+  app.rutaResultado = null;
+  app.pantalla = 'ruta';
+  render();
+  iniciarRutaTimer();
+}
+
+function terminarRuta() {
+  detenerRutaTimer();
+  app.rutaResultado = evaluarRuta(app.rutaView, app.marcas);
+  app.pantalla = 'rutaResultado';
+  render();
+}
+
+// ------------------------------------------------------------
+// Eventos (delegados sobre #pantalla)
+// ------------------------------------------------------------
+pantalla.addEventListener('click', (e) => {
+  const t = e.target;
+  const cerca = (attr) => t.closest(`[${attr}]`);
+
+  // Pantalla 1 — Inicio: modo, especialidad, caso, ruta
+  const md = cerca('data-modo');
+  if (md) { detenerRutaTimer(); app.modo = md.dataset.modo; app.pantalla = 'inicio'; return render(); }
+  const esp = cerca('data-esp');
+  if (esp) { app.especialidad = esp.dataset.esp; return render(); }
+  const caso = cerca('data-caso');
+  if (caso) return abrirCaso(caso.dataset.caso);
+  const ruta = cerca('data-ruta');
+  if (ruta) return abrirRuta(ruta.dataset.ruta);
+
+  // Modo Ruta — checklist
+  const rp = cerca('data-ruta-punto');
+  if (rp) {
+    const id = rp.dataset.rutaPunto;
+    if (Object.prototype.hasOwnProperty.call(app.marcas, id)) delete app.marcas[id];
+    else app.marcas[id] = null;
+    return render();
+  }
+  const rf = cerca('data-ruta-frec');
+  if (rf) {
+    const [id, f] = rf.dataset.rutaFrec.split(':');
+    app.marcas[id] = f;
+    return render();
+  }
+  if (t.closest('#btn-terminar-ruta')) return terminarRuta();
+  if (t.closest('#btn-abandonar-ruta')) { detenerRutaTimer(); app.pantalla = 'inicio'; return render(); }
+  if (t.closest('#btn-rutas')) { app.pantalla = 'inicio'; return render(); }
+  if (t.closest('#btn-ruta-reintentar')) return abrirRuta(app.rutaView.id);
+
+  // Pantalla 2 — Inspección
+  if (t.closest('[data-sonido]')) { app.sonido = !app.sonido; if (app.sonido) tick(false); return render(); }
+  const punto = cerca('data-punto');
+  if (punto) {
+    const pid = punto.dataset.punto;
+    const r = revelarPunto(app.estado, pid);
+    if (r.ok) {
+      app.ultimoRevelado = pid;
+      const def = app.view.puntos.find((p) => p.id === pid);
+      if (def && def.clave) { vibrar([12, 45, 20]); tick(true); }  // pista clave: destello + doble pulso
+      else { vibrar(8); tick(false); }
+    }
+    return render();
+  }
+  if (t.closest('#btn-diagnosticar')) { app.pantalla = 'diagnostico'; app.seleccionHip = null; return render(); }
+  if (t.closest('#btn-abandonar')) { app.pantalla = 'inicio'; return render(); }
+
+  // Pantalla 3 — Diagnóstico
+  const hip = cerca('data-hip');
+  if (hip) { app.seleccionHip = hip.dataset.hip; return render(); }
+  if (t.closest('#btn-confirmar-dx')) return confirmarDiagnostico();
+  if (t.closest('#btn-volver-insp')) { app.pantalla = 'inspeccion'; return render(); }
+
+  // Pantalla 4 — Reparación
+  const rep = cerca('data-rep');
+  if (rep) { app.seleccionRep = rep.dataset.rep; return render(); }
+  const repuesto = cerca('data-repuesto');
+  if (repuesto) {
+    const v = repuesto.dataset.repuesto;
+    const i = app.repuestosSel.indexOf(v);
+    if (i >= 0) app.repuestosSel.splice(i, 1); else app.repuestosSel.push(v);
+    return render();
+  }
+  if (t.closest('#btn-reparar')) return ejecutarReparacion();
+
+  // Pantalla 5 — Resultado
+  if (t.closest('#btn-siguiente')) return siguienteCaso();
+  if (t.closest('#btn-taller')) { app.pantalla = 'inicio'; return render(); }
+});
+
+// ------------------------------------------------------------
+render();
+
+})();
+  </script>
+</body>
+</html>
